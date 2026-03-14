@@ -1,0 +1,50 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "MPI compile active file (mpicc)",
+      "command": "docker run -it --mount src=\"${fileDirname}\",target=/home,type=bind spagnuolocarmine/docker-mpi:latest mpicc -g /home/${fileBasename} -o /home/${fileBasenameNoExtension}",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": ["$eslint-compact"],
+      "group": "build"
+    },
+    {
+      "type": "shell",
+      "label": "MPI run active file (mpicc && mpirun)",
+      "command": "docker run -it --mount src=\"${fileDirname}\",target=/home,type=bind spagnuolocarmine/docker-mpi:latest mpirun --allow-run-as-root -np ${input:np} /home/${fileBasenameNoExtension}",
+      "dependsOn": ["MPI compile active file (mpicc)"],
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": ["$eslint-compact"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Compile MPI C",
+      "type": "shell",
+      "command": "gcc",
+      "args": [
+          "${file}",
+          "-o", "${fileDirname}\\${fileBasenameNoExtension}.exe",
+          "-I", "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Include",
+          "-L", "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64",
+          "-lmsmpi"
+      ],
+      "group": { "kind": "build", "isDefault": true }
+  }
+  ],
+  "inputs": [
+    {
+      "id": "np",
+      "description": "Number of processes:",
+      "default": "4",
+      "type": "promptString"
+    }
+  ]
+}
