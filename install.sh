@@ -2,8 +2,11 @@
 
 echo "Starting rapid server configuration (OpenMPI)..."
 
-# Create user 'pcpc' if it doesn't already exist
-if ! id "pcpc" &>/dev/null; then
+# Check if user 'pcpc' exists
+if id "pcpc" &>/dev/null; then
+    echo "User pcpc exists. Changing password to 'root'..."
+    echo "pcpc:root" | chpasswd
+else
     echo "Creating user pcpc..."
     useradd -s /bin/bash -d /home/pcpc/ -m -G sudo pcpc
     # Set the password to "root" for user pcpc
