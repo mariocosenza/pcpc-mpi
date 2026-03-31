@@ -47,6 +47,7 @@ int main(int argc, char **argv) {
     MPI_Status status;
     
     MPI_Init(&argc, &argv);
+    double start = MPI_Wtime();
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -97,6 +98,11 @@ int main(int argc, char **argv) {
         max(all_maxs, &max_f, size);
         printf("Min array: %d | Max array: %d\n", min_f, max_f);
     }
+
+    double end = MPI_Wtime();
+    double local_elapsed = end - start;
+    printf("Process %d: Elapsed time = %f seconds\n", rank, local_elapsed);
+
 
     MPI_Finalize();
 
