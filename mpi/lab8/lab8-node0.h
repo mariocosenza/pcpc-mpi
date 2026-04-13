@@ -1,0 +1,1 @@
+int node0(const int rank, const int size, const size_t N, const size_t M, MPI_Comm comm);
