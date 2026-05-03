@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Starting rapid server configuration (OpenMPI)..."
+echo "Starting rapid server configuration (Intel MPI)..."
 
 # Check if user 'pcpc' exists
 if id "pcpc" &>/dev/null; then
@@ -18,17 +18,26 @@ fi
 echo "Updating APT and installing packages..."
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -q
-apt-get install -yq vim htop build-essential openssh-client openssh-server openmpi-bin libopenmpi-dev
+apt-get install -yq vim htop build-essential openssh-client openssh-server
+
+# Install Intel MPI via google_install_intelmpi
+echo "Installing Intel MPI..."
+if [ -f "/usr/bin/google_install_intelmpi" ]; then
+    /usr/bin/google_install_intelmpi
+else
+    # Fallback/Alternative: install from official Intel repo
+    echo "google_install_intelmpi not found, attempting alternative installation..."
+    apt-get install -yq intel-mpi-2021.10.0 || echo "Failed to install intel-mpi package via apt."
+fi
 
 # SSH Configuration for the cluster
 echo "Configuring SSH keys..."
 SSH_DIR="/home/pcpc/.ssh"
 mkdir -p "$SSH_DIR"
 
-# Generate keys ONLY if they don't already exist (prevents overwriting on workers)
-if [ ! -f "$SSH_DIR/id_rsa" ]; then
-    ssh-keygen -t rsa -b 4096 -f "$SSH_DIR/id_rsa" -q -N ""
-fi
+# Write the common SSH keys provided by Terraform
+echo "${id_rsa}" > "$SSH_DIR/id_rsa"
+echo "${id_rsa_pub}" > "$SSH_DIR/id_rsa.pub"
 
 # Add the public key to authorized_keys
 cat "$SSH_DIR/id_rsa.pub" >> "$SSH_DIR/authorized_keys"
@@ -50,4 +59,30 @@ chown -R pcpc:pcpc "$SSH_DIR"
 echo "Running ldconfig..."
 ldconfig
 
-echo "Installation completed successfully!"
+echo "Verifying installations..."
+ALL_OK=true
+
+# Check standard packages
+for cmd in vim htop gcc ssh sshd; do
+    if command -v $cmd &> /dev/null; then
+        echo " - [OK] $cmd is installed."
+    else
+        echo " - [ERROR] $cmd is NOT installed."
+        ALL_OK=false
+    fi
+done
+
+# Check Intel MPI
+if dpkg -l | grep -q intel-mpi || [ -d "/opt/intel/mpi" ] || command -v mpiicc &> /dev/null; then
+    echo " - [OK] Intel MPI components found."
+else
+    echo " - [WARNING] Intel MPI does not seem to be correctly installed or is not in standard paths."
+    ALL_OK=false
+fi
+
+if [ "$ALL_OK" = true ]; then
+    echo "Installation and verification completed successfully!"
+else
+    echo "Installation completed, but some packages are missing. Please check the logs."
+    exit 1
+fi

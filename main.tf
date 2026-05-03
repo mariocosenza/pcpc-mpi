@@ -6,7 +6,7 @@ provider "google" {
 resource "google_compute_instance" "vm_instances" {
   count        = 4
   name         = "instance-pcpc${count.index + 1}"
-  machine_type = "e2-micro"
+  machine_type = "e2-micro" # Nota: molto limitata per compilare Intel MPI
   zone         = "europe-north2-b"
 
   scheduling {
@@ -18,15 +18,16 @@ resource "google_compute_instance" "vm_instances" {
 
   boot_disk {
     initialize_params {
-      image = "ubuntu-os-cloud/ubuntu-2404-lts-amd64"
-      size  = 10
-      type  = "pd-standard"
+      image = "rocky-linux-cloud/rocky-linux-9" 
+      size  = 20 
+      type  = "pd-balanced" 
     }
   }
+
   network_interface {
     network = "default"
     access_config {
-      network_tier = "STANDARD"
+      network_tier = "PREMIUM" 
     }
   }
 
@@ -34,6 +35,17 @@ resource "google_compute_instance" "vm_instances" {
     env = "pcpc-lab-mpi"
   }
 
-  #Installing OpenMPI and other necessary packages using a startup script
-  #metadata_startup_script = file("${path.module}/install.sh")
+  metadata = {
+    ssh-keys = "pcpc:${tls_private_key.ssh_key.public_key_openssh}"
+  }
+
+  metadata_startup_script = templatefile("${path.module}/install.sh", {
+    id_rsa     = tls_private_key.ssh_key.private_key_pem
+    id_rsa_pub = tls_private_key.ssh_key.public_key_openssh
+  })
+}
+
+resource "tls_private_key" "ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
 }

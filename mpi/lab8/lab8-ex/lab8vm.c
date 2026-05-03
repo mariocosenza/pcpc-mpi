@@ -1,12 +1,11 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 
-#define LIVE true
-#define DEAD false
+#define LIVE 1
+#define DEAD 0
 
 int N_GEN = 4;
 uint32_t SEED = 34577;
@@ -19,10 +18,10 @@ typedef struct {
 typedef struct {
     Size_matrix size;
     void        *matrix;
-    bool        *recv_l_ghost;
-    bool        *recv_r_ghost;
-    bool        *recv_t_ghost;
-    bool        *recv_b_ghost;
+    uint8_t        *recv_l_ghost;
+    uint8_t        *recv_r_ghost;
+    uint8_t        *recv_t_ghost;
+    uint8_t        *recv_b_ghost;
 } Game_matrix;
 
 typedef struct {
@@ -30,7 +29,8 @@ typedef struct {
     int    rank;
 } TimeRankPair;
 
-uint32_t count_live_cells(uint64_t total_cells, bool *buffer) {
+
+uint32_t count_live_cells(uint64_t total_cells, uint8_t *buffer) {
     uint32_t count = 0;
     for (uint64_t i = 0; i < total_cells; i++) {
         if (buffer[i] == LIVE) {
@@ -40,7 +40,7 @@ uint32_t count_live_cells(uint64_t total_cells, bool *buffer) {
     return count;
 }
 
-bool is_min_size(uint32_t proc_compute_size, uint32_t M, uint32_t N) {
+uint8_t is_min_size(uint32_t proc_compute_size, uint32_t M, uint32_t N) {
     uint64_t cells_per_node = ((uint64_t)M * N) / proc_compute_size;
     
     return cells_per_node >= 1000000;
@@ -62,21 +62,15 @@ void partition_dimension(uint32_t total, int parts, int *sizes, int *offsets) {
 }
 
 void parse_args(int argc, char **argv, uint32_t *M, uint32_t *N) {
-    int opt;
-    while ((opt = getopt(argc, argv, "N:M:G:S:")) != -1) {
-        switch (opt) {
-            case 'N': 
-                *N = (uint32_t)atoi(optarg); 
-                break;
-            case 'M': 
-                *M = (uint32_t)atoi(optarg); 
-                break;
-            case 'G': 
-                N_GEN = atoi(optarg); 
-                break;
-            case 'S': 
-                SEED = (uint32_t)atoi(optarg); 
-                break;
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-N") == 0 && i + 1 < argc) {
+            *N = (uint32_t)atoi(argv[++i]);
+        } else if (strcmp(argv[i], "-M") == 0 && i + 1 < argc) {
+            *M = (uint32_t)atoi(argv[++i]);
+        } else if (strcmp(argv[i], "-G") == 0 && i + 1 < argc) {
+            N_GEN = atoi(argv[++i]);
+        } else if (strcmp(argv[i], "-S") == 0 && i + 1 < argc) {
+            SEED = (uint32_t)atoi(argv[++i]);
         }
     }
 }
@@ -90,7 +84,7 @@ void master_generate_and_distribute(uint32_t M, uint32_t N, int proc_compute_siz
     partition_dimension(M, mpi_dims[0], row_sizes, row_offsets);
     partition_dimension(N, mpi_dims[1], col_sizes, col_offsets);
 
-    bool (*global_matrix)[N] = malloc(sizeof(bool[M][N]));
+    uint8_t (*global_matrix)[N] = malloc(sizeof(uint8_t[M][N]));
     if (!global_matrix) {
         MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
     }
@@ -111,7 +105,7 @@ void master_generate_and_distribute(uint32_t M, uint32_t N, int proc_compute_siz
         int starts[2]   = { row_offsets[r_idx], col_offsets[c_idx] };
 
         MPI_Datatype block_type;
-        MPI_Type_create_subarray(2, sizes, subsizes, starts, MPI_ORDER_C, MPI_C_BOOL, &block_type);
+        MPI_Type_create_subarray(2, sizes, subsizes, starts, MPI_ORDER_C, MPI_UINT8_T, &block_type);
         MPI_Type_commit(&block_type);
         
         MPI_Send(&global_matrix[0][0], 1, block_type, first_worker_rank + worker_rank, 0, MPI_COMM_WORLD);
@@ -123,8 +117,8 @@ void master_generate_and_distribute(uint32_t M, uint32_t N, int proc_compute_siz
 }
 
 static inline void play_inner_cells(void *current_grid_ptr, void *next_grid_ptr, uint_fast32_t r, uint_fast32_t c, uint32_t N) {
-    bool (*current_grid)[N] = current_grid_ptr;
-    bool (*next_grid)[N]    = next_grid_ptr;
+    uint8_t (*current_grid)[N] = current_grid_ptr;
+    uint8_t (*next_grid)[N]    = next_grid_ptr;
 
     uint_fast8_t live_neighbors = 
           current_grid[r-1][c-1] + current_grid[r-1][c] + current_grid[r-1][c+1]
@@ -141,7 +135,7 @@ static inline void play_inner_cells(void *current_grid_ptr, void *next_grid_ptr,
 static inline uint_fast8_t read_cell_or_ghost(Game_matrix *gm, int_fast32_t r, int_fast32_t c) {
     uint32_t max_rows = gm->size.rows;
     uint32_t max_cols = gm->size.cols;
-    bool (*local_grid)[max_cols] = gm->matrix;
+    uint8_t (*local_grid)[max_cols] = gm->matrix;
 
     if (r < 0 && c < 0) {
         return gm->recv_l_ghost[0];
@@ -175,8 +169,8 @@ static inline uint_fast8_t read_cell_or_ghost(Game_matrix *gm, int_fast32_t r, i
 
 static inline void play_border_cells(Game_matrix *gm, void *next_grid_ptr, uint32_t r, uint32_t c) {
     uint32_t max_cols = gm->size.cols;
-    bool (*next_grid)[max_cols]    = next_grid_ptr;
-    bool (*current_grid)[max_cols] = gm->matrix;
+    uint8_t (*next_grid)[max_cols]    = next_grid_ptr;
+    uint8_t (*current_grid)[max_cols] = gm->matrix;
 
     uint_fast8_t live_neighbors = 0;
     
@@ -201,10 +195,10 @@ void async_recv_top_bottom(MPI_Comm comm, Game_matrix *gm, int top_rank, int bot
     req[1] = MPI_REQUEST_NULL;
 
     if (top_rank != MPI_PROC_NULL) {
-        MPI_Irecv(gm->recv_t_ghost, (int)gm->size.cols, MPI_C_BOOL, top_rank, 1, comm, &req[0]);
+        MPI_Irecv(gm->recv_t_ghost, (int)gm->size.cols, MPI_UINT8_T, top_rank, 1, comm, &req[0]);
     }
     if (bot_rank != MPI_PROC_NULL) {
-        MPI_Irecv(gm->recv_b_ghost, (int)gm->size.cols, MPI_C_BOOL, bot_rank, 1, comm, &req[1]);
+        MPI_Irecv(gm->recv_b_ghost, (int)gm->size.cols, MPI_UINT8_T, bot_rank, 1, comm, &req[1]);
     }
 }
 
@@ -212,18 +206,18 @@ void async_send_top_bottom(MPI_Comm comm, Game_matrix *gm, int top_rank, int bot
     req[0] = MPI_REQUEST_NULL;
     req[1] = MPI_REQUEST_NULL;
     
-    bool (*local_grid)[gm->size.cols] = gm->matrix;
+    uint8_t (*local_grid)[gm->size.cols] = gm->matrix;
 
     if (top_rank != MPI_PROC_NULL) {
-        MPI_Isend(local_grid[0], (int)gm->size.cols, MPI_C_BOOL, top_rank, 1, comm, &req[0]);
+        MPI_Isend(local_grid[0], (int)gm->size.cols, MPI_UINT8_T, top_rank, 1, comm, &req[0]);
     }
     if (bot_rank != MPI_PROC_NULL) {
-        MPI_Isend(local_grid[gm->size.rows - 1], (int)gm->size.cols, MPI_C_BOOL, bot_rank, 1, comm, &req[1]);
+        MPI_Isend(local_grid[gm->size.rows - 1], (int)gm->size.cols, MPI_UINT8_T, bot_rank, 1, comm, &req[1]);
     }
 }
 
-void pack_left_right_send_buffers(Game_matrix *gm, bool *send_l_buf, bool *send_r_buf) {
-    bool (*local_grid)[gm->size.cols] = gm->matrix;
+void pack_left_right_send_buffers(Game_matrix *gm, uint8_t *send_l_buf, uint8_t *send_r_buf) {
+    uint8_t (*local_grid)[gm->size.cols] = gm->matrix;
     
     send_l_buf[0] = gm->recv_t_ghost[0];
     send_r_buf[0] = gm->recv_t_ghost[gm->size.cols - 1];
@@ -242,22 +236,22 @@ void async_recv_left_right(MPI_Comm comm, Game_matrix *gm, int left_rank, int ri
     req[1] = MPI_REQUEST_NULL;
 
     if (left_rank != MPI_PROC_NULL) {
-        MPI_Irecv(gm->recv_l_ghost, (int)gm->size.rows + 2, MPI_C_BOOL, left_rank, 2, comm, &req[0]);
+        MPI_Irecv(gm->recv_l_ghost, (int)gm->size.rows + 2, MPI_UINT8_T, left_rank, 2, comm, &req[0]);
     }
     if (right_rank != MPI_PROC_NULL) {
-        MPI_Irecv(gm->recv_r_ghost, (int)gm->size.rows + 2, MPI_C_BOOL, right_rank, 2, comm, &req[1]);
+        MPI_Irecv(gm->recv_r_ghost, (int)gm->size.rows + 2, MPI_UINT8_T, right_rank, 2, comm, &req[1]);
     }
 }
 
-void async_send_left_right(MPI_Comm comm, Game_matrix *gm, int left_rank, int right_rank, bool *send_l_buf, bool *send_r_buf, MPI_Request req[2]) {
+void async_send_left_right(MPI_Comm comm, Game_matrix *gm, int left_rank, int right_rank, uint8_t *send_l_buf, uint8_t *send_r_buf, MPI_Request req[2]) {
     req[0] = MPI_REQUEST_NULL;
     req[1] = MPI_REQUEST_NULL;
 
     if (left_rank != MPI_PROC_NULL) {
-        MPI_Isend(send_l_buf, (int)gm->size.rows + 2, MPI_C_BOOL, left_rank, 2, comm, &req[0]);
+        MPI_Isend(send_l_buf, (int)gm->size.rows + 2, MPI_UINT8_T, left_rank, 2, comm, &req[0]);
     }
     if (right_rank != MPI_PROC_NULL) {
-        MPI_Isend(send_r_buf, (int)gm->size.rows + 2, MPI_C_BOOL, right_rank, 2, comm, &req[1]);
+        MPI_Isend(send_r_buf, (int)gm->size.rows + 2, MPI_UINT8_T, right_rank, 2, comm, &req[1]);
     }
 }
 
@@ -282,22 +276,22 @@ void run_worker(int rank, uint32_t M, uint32_t N, int compute_sz, int mpi_dims[2
         MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
     }
 
-    bool (*local_grid)[local_cols] = malloc(sizeof(bool[local_rows][local_cols]));
+    uint8_t (*local_grid)[local_cols] = malloc(sizeof(uint8_t[local_rows][local_cols]));
     if (!local_grid) {
         MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
     }
 
-    MPI_Recv(local_grid, (int)(local_rows * local_cols), MPI_C_BOOL, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    MPI_Recv(local_grid, (int)(local_rows * local_cols), MPI_UINT8_T, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-    bool *recv_l_ghost = calloc(local_rows + 2, sizeof(bool));
-    bool *recv_r_ghost = calloc(local_rows + 2, sizeof(bool));
-    bool *recv_t_ghost = calloc(local_cols, sizeof(bool));
-    bool *recv_b_ghost = calloc(local_cols, sizeof(bool));
+    uint8_t *recv_l_ghost = calloc(local_rows + 2, sizeof(uint8_t));
+    uint8_t *recv_r_ghost = calloc(local_rows + 2, sizeof(uint8_t));
+    uint8_t *recv_t_ghost = calloc(local_cols, sizeof(uint8_t));
+    uint8_t *recv_b_ghost = calloc(local_cols, sizeof(uint8_t));
     
-    bool *send_l_buf   = malloc((local_rows + 2) * sizeof(bool));
-    bool *send_r_buf   = malloc((local_rows + 2) * sizeof(bool));
+    uint8_t *send_l_buf   = malloc((local_rows + 2) * sizeof(uint8_t));
+    uint8_t *send_r_buf   = malloc((local_rows + 2) * sizeof(uint8_t));
     
-    bool (*next_local_grid)[local_cols] = malloc(sizeof(bool[local_rows][local_cols]));
+    uint8_t (*next_local_grid)[local_cols] = malloc(sizeof(uint8_t[local_rows][local_cols]));
 
     if (!recv_l_ghost || !recv_r_ghost || !recv_t_ghost || !recv_b_ghost || !send_l_buf || !send_r_buf || !next_local_grid) {
         MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
@@ -327,8 +321,8 @@ void run_worker(int rank, uint32_t M, uint32_t N, int compute_sz, int mpi_dims[2
     MPI_Status  mpi_stats[2];
 
     for (int g = 0; g < N_GEN; g++) {
-        uint32_t live_count = count_live_cells((uint64_t)local_rows * local_cols, (bool *)gm.matrix);
-        MPI_Reduce(&live_count, NULL, 1, MPI_UINT32_T, MPI_SUM, 0, gather_comm);
+       // uint32_t live_count = count_live_cells((uint64_t)local_rows * local_cols, (uint8_t *)gm.matrix);
+       //MPI_Reduce(&live_count, NULL, 1, MPI_UINT32_T, MPI_SUM, 0, gather_comm);
 
         if (g < N_GEN - 1) {
             async_recv_top_bottom(cart_comm, &gm, top_rank, bot_rank, req_recv_tb);
@@ -386,11 +380,11 @@ void run_worker(int rank, uint32_t M, uint32_t N, int compute_sz, int mpi_dims[2
 void run_master(uint32_t M, uint32_t N, int compute_sz, int first_rank, int mpi_dims[2], MPI_Comm gather_comm) {
     master_generate_and_distribute(M, N, compute_sz, first_rank, mpi_dims);
     
-    for (int g = 0; g < N_GEN; g++) {
+   /* for (int g = 0; g < N_GEN; g++) {
         uint32_t tot_live = 0;
         MPI_Reduce(MPI_IN_PLACE, &tot_live, 1, MPI_UINT32_T, MPI_SUM, 0, gather_comm);
         printf("Gen: %d | Live: %u\n", g, tot_live);
-    }
+    } */
 }
 
 int main(int argc, char **argv) {
