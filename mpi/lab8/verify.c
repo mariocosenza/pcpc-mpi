@@ -15,7 +15,7 @@ uint32_t count_live_cells(uint64_t total_cells, uint8_t *buffer) {
 }
 
 void print_while_reading_matrix(uint32_t M, uint32_t N) {
-    FILE *fp = fopen("matrix.bin", "rb");
+    FILE *fp = fopen("full_matrix.bin", "rb");
     if (!fp) {
         perror("Errore nell'apertura del file");
         exit(EXIT_FAILURE);
@@ -33,9 +33,10 @@ void print_while_reading_matrix(uint32_t M, uint32_t N) {
             fprintf(stderr, "Errore nella lettura della riga %u\n", r);
             break;
         }
+        count_live += count_live_cells(N, row_buffer);
+        printf("[%3u] ", r);
         for (uint32_t c = 0; c < N; c++) {
-            count_live += count_live_cells(N, row_buffer[c]);
-           
+            printf("%c ", row_buffer[c] == 1 ? 'L' : 'D');
         }
         printf("\n");
     }

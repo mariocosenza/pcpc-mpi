@@ -9,7 +9,9 @@ int PATTERN = 0;
 uint8_t READ = 0;
 
 void write_matrix_to_file_fast(uint32_t M, uint32_t N) {
-    FILE *fp = fopen("matrix.bin", "wb");
+    char filename[256];
+    sprintf(filename, "matrix_%ux%u_seed%u_pattern%d.bin", M, N, SEED, PATTERN);
+    FILE *fp = fopen(filename, "wb");
     if (!fp) {
         perror("Errore nell'apertura del file");
         exit(EXIT_FAILURE);
@@ -52,11 +54,11 @@ void write_matrix_to_file_fast(uint32_t M, uint32_t N) {
     fclose(fp);
     
     const char* pattern_names[] = {"Random", "Glider", "Blinker", "Block"};
-    printf("Matrice %u x %u scritta su matrix.bin (Pattern: %s)\n", M, N, pattern_names[PATTERN]);
+    printf("Matrice %u x %u scritta su %s (Pattern: %s)\n", M, N, filename, pattern_names[PATTERN]);
 }
 
 void print_while_reading_matrix(uint32_t M, uint32_t N) {
-    FILE *fp = fopen("matrix.bin", "rb");
+    FILE *fp = fopen("full_matrix.bin", "rb");
     if (!fp) {
         perror("Errore nell'apertura del file");
         exit(EXIT_FAILURE);

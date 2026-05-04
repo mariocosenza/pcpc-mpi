@@ -9,6 +9,8 @@
 
 int N_GEN = 4;
 uint32_t SEED = 34577;
+char filename[256] = "matrix.bin";
+int SAVE_OUTPUT = 0;
 
 typedef struct {
     uint32_t rows;
@@ -30,9 +32,9 @@ typedef struct {
 
 void read_matrix_from_file(void *out_matrix, int *sizes, int *subsizes, int *starts) {
 #ifdef _WIN32
-    FILE *fp = _fsopen("matrix.bin", "rb", _SH_DENYNO);
+    FILE *fp = _fsopen(filename, "rb", _SH_DENYNO);
 #else
-    FILE *fp = fopen("matrix.bin", "rb");
+    FILE *fp = fopen(filename, "rb");
 #endif
     if (!fp) {
         MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
@@ -91,6 +93,14 @@ void parse_args(int argc, char **argv, uint32_t *M, uint32_t *N) {
             N_GEN = atoi(argv[++i]);
         } else if (strcmp(argv[i], "-S") == 0 && i + 1 < argc) {
             SEED = (uint32_t)atoi(argv[++i]);
+        } else if (strcmp(argv[i], "-FN") == 0 && i + 1 < argc) {
+            strcpy(filename, argv[++i]);
+        } else if (strcmp(argv[i], "-SO") == 0) {
+            SAVE_OUTPUT = 1;
+        }
+        else {
+            fprintf(stderr,"Argomento sconosciuto. Usare -N <cols> -M <rows> -G <generations> -S <seed> -FN <filename> -SO (salva output)\n");
+            exit(EXIT_FAILURE);
         }
     }
 }
@@ -303,7 +313,21 @@ void run_worker(int mpi_dims[2], MPI_Comm split_comm, int sizes[2], int subsizes
     }
 
     
-    // TODO:MPI I/O
+    if (SAVE_OUTPUT) {
+        MPI_Datatype file_type;
+        MPI_Type_create_subarray(2, sizes, subsizes, starts,
+                             MPI_ORDER_C, MPI_UINT8_T, &file_type);
+        MPI_Type_commit(&file_type);
+        MPI_File fh;
+        MPI_File_open(cart_comm, "full_matrix.bin", 
+                      MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &fh);
+                      MPI_File_set_view(fh, 0, MPI_UINT8_T, file_type, "native", MPI_INFO_NULL);
+
+        MPI_File_write_all(fh, gm.matrix, local_rows * local_cols, MPI_UINT8_T, MPI_STATUS_IGNORE);
+    
+        MPI_File_close(&fh);
+        MPI_Type_free(&file_type);
+    }
 
     free(recv_l_ghost);
     free(recv_r_ghost);
@@ -315,6 +339,37 @@ void run_worker(int mpi_dims[2], MPI_Comm split_comm, int sizes[2], int subsizes
     free(gm.matrix);
     
     MPI_Comm_free(&cart_comm);
+}
+
+void run_master(int mpi_dims[2], MPI_Comm split_comm, uint32_t M, uint32_t N, int sizes[2], int subsizes[2], int starts[2]) {
+    int row_sizes[mpi_dims[0]], row_offsets[mpi_dims[0]];
+    int col_sizes[mpi_dims[1]], col_offsets[mpi_dims[1]];
+    
+    partition_dimension(M, mpi_dims[0], row_sizes, row_offsets);
+    partition_dimension(N, mpi_dims[1], col_sizes, col_offsets);
+
+    sizes[0] = (int)M; 
+    sizes[1] = (int)N;
+
+    int compute_sz;
+    MPI_Comm_size(split_comm, &compute_sz);
+
+    for (int i = 1; i < compute_sz; i++) {
+        int r_idx = i / mpi_dims[1];
+        int c_idx = i % mpi_dims[1];
+        
+        int sub[2] = { row_sizes[r_idx], col_sizes[c_idx] };
+        int st[2]  = { row_offsets[r_idx], col_offsets[c_idx] };
+
+        MPI_Send(sizes, 2, MPI_INT, i, 0, split_comm);
+        MPI_Send(sub, 2, MPI_INT, i, 1, split_comm);
+        MPI_Send(st, 2, MPI_INT, i, 2, split_comm);
+    }
+
+    subsizes[0] = row_sizes[0];
+    subsizes[1] = col_sizes[0];
+    starts[0]   = row_offsets[0];
+    starts[1]   = col_offsets[0];
 }
 
 int main(int argc, char **argv) {
@@ -349,32 +404,7 @@ int main(int argc, char **argv) {
         int sizes[2], subsizes[2], starts[2];
 
         if (rank == 0) {
-            int row_sizes[mpi_dims[0]], row_offsets[mpi_dims[0]];
-            int col_sizes[mpi_dims[1]], col_offsets[mpi_dims[1]];
-            
-            partition_dimension(M, mpi_dims[0], row_sizes, row_offsets);
-            partition_dimension(N, mpi_dims[1], col_sizes, col_offsets);
-
-            sizes[0] = (int)M; 
-            sizes[1] = (int)N;
-
-            for (int i = 1; i < compute_sz; i++) {
-                int r_idx = i / mpi_dims[1];
-                int c_idx = i % mpi_dims[1];
-                
-                int sub[2] = { row_sizes[r_idx], col_sizes[c_idx] };
-                int st[2]  = { row_offsets[r_idx], col_offsets[c_idx] };
-
-                MPI_Send(sizes, 2, MPI_INT, i, 0, split_comm);
-                MPI_Send(sub, 2, MPI_INT, i, 1, split_comm);
-                MPI_Send(st, 2, MPI_INT, i, 2, split_comm);
-            }
-
-            subsizes[0] = row_sizes[0];
-            subsizes[1] = col_sizes[0];
-            starts[0]   = row_offsets[0];
-            starts[1]   = col_offsets[0];
-
+            run_master(mpi_dims, split_comm, M, N, sizes, subsizes, starts);
         } else {
             MPI_Recv(sizes, 2, MPI_INT, 0, 0, split_comm, MPI_STATUS_IGNORE);
             MPI_Recv(subsizes, 2, MPI_INT, 0, 1, split_comm, MPI_STATUS_IGNORE);
