@@ -1,88 +1,64 @@
 #!/bin/bash
 
-echo "Starting rapid server configuration (Intel MPI)..."
-
-# Check if user 'pcpc' exists
 if id "pcpc" &>/dev/null; then
-    echo "User pcpc exists. Changing password to 'root'..."
     echo "pcpc:root" | chpasswd
 else
-    echo "Creating user pcpc..."
-    useradd -s /bin/bash -d /home/pcpc/ -m -G sudo pcpc
-    # Set the password to "root" for user pcpc
+    useradd -s /bin/bash -d /home/pcpc/ -m -G wheel pcpc
     echo "pcpc:root" | chpasswd
-    echo "User pcpc created successfully."
 fi
 
-# Update and install packages quickly without interactive prompts
-echo "Updating APT and installing packages..."
 export DEBIAN_FRONTEND=noninteractive
-apt-get update -q
-apt-get install -yq vim htop build-essential openssh-client openssh-server
+dnf install -y vim htop git gcc gcc-c++ make openssh-clients openssh-server
 
-# Install Intel MPI via google_install_intelmpi
-echo "Installing Intel MPI..."
 if [ -f "/usr/bin/google_install_intelmpi" ]; then
     /usr/bin/google_install_intelmpi
-else
-    # Fallback/Alternative: install from official Intel repo
-    echo "google_install_intelmpi not found, attempting alternative installation..."
-    apt-get install -yq intel-mpi-2021.10.0 || echo "Failed to install intel-mpi package via apt."
 fi
+dnf install -y intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic intel-oneapi-mpi-devel
 
-# SSH Configuration for the cluster
-echo "Configuring SSH keys..."
 SSH_DIR="/home/pcpc/.ssh"
 mkdir -p "$SSH_DIR"
-
-# Write the common SSH keys provided by Terraform
 echo "${id_rsa}" > "$SSH_DIR/id_rsa"
 echo "${id_rsa_pub}" > "$SSH_DIR/id_rsa.pub"
-
-# Add the public key to authorized_keys
 cat "$SSH_DIR/id_rsa.pub" >> "$SSH_DIR/authorized_keys"
 
-# Create the SSH config file to disable strict host checking within the cluster
 cat <<EOF > "$SSH_DIR/config"
 Host *
-   StrictHostKeyChecking no
-   UserKnownHostsFile=/dev/null
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+    LogLevel ERROR
 EOF
 
-# Set the strict permissions required by SSH
-chmod 700 "$SSH_DIR"
-chmod 600 "$SSH_DIR/id_rsa" "$SSH_DIR/authorized_keys" "$SSH_DIR/config"
-chmod 644 "$SSH_DIR/id_rsa.pub"
+sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+echo "UseDNS no" >> /etc/ssh/sshd_config
+systemctl restart sshd
+
 chown -R pcpc:pcpc "$SSH_DIR"
+chmod 700 "$SSH_DIR"
+chmod 600 "$SSH_DIR/id_rsa" "$SSH_DIR/authorized_keys"
 
-# Update shared library cache
-echo "Running ldconfig..."
+REPO_DIR="/home/pcpc/pcpc-mpi"
+if [ ! -d "$REPO_DIR" ]; then
+    sudo -u pcpc git clone https://github.com/mariocosenza/pcpc-mpi.git "$REPO_DIR"
+fi
+
+cat <<EOF >> /home/pcpc/.bashrc
+if [ -f "/opt/intel/oneapi/setvars.sh" ]; then
+    source /opt/intel/oneapi/setvars.sh > /dev/null 2>&1
+fi
+export I_MPI_PIN_DOMAIN=core
+export I_MPI_PIN_ORDER=compact
+EOF
+
+if [ -f "/opt/intel/oneapi/setvars.sh" ]; then
+    source /opt/intel/oneapi/setvars.sh > /dev/null 2>&1
+fi
+
+cd "$REPO_DIR/lab8"
+
+FLAGS="-O3 -xSAPPHIRERAPIDS -ipo -ffast-math -fiopenmp-simd -qopt-mem-layout-trans=3 -D_CRT_SECURE_NO_WARNINGS"
+
+sudo -u pcpc mpiicx $FLAGS generate_seed.c -o generate_seed
+sudo -u pcpc mpiicx $FLAGS lab8vm-file.c -o game_of_life
+
+chown -R pcpc:pcpc "$REPO_DIR"
 ldconfig
-
-echo "Verifying installations..."
-ALL_OK=true
-
-# Check standard packages
-for cmd in vim htop gcc ssh sshd; do
-    if command -v $cmd &> /dev/null; then
-        echo " - [OK] $cmd is installed."
-    else
-        echo " - [ERROR] $cmd is NOT installed."
-        ALL_OK=false
-    fi
-done
-
-# Check Intel MPI
-if dpkg -l | grep -q intel-mpi || [ -d "/opt/intel/mpi" ] || command -v mpiicc &> /dev/null; then
-    echo " - [OK] Intel MPI components found."
-else
-    echo " - [WARNING] Intel MPI does not seem to be correctly installed or is not in standard paths."
-    ALL_OK=false
-fi
-
-if [ "$ALL_OK" = true ]; then
-    echo "Installation and verification completed successfully!"
-else
-    echo "Installation completed, but some packages are missing. Please check the logs."
-    exit 1
-fi
