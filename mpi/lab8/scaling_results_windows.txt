@@ -1,0 +1,85 @@
+--- Test Scalabilita Start: 10/05/2026 16:45:31,24 --- 
+>>> Test: 6 x 6 con 1 processi <<< 
+Max Time: 0.000189 s (Rank: 0)
+>>> Test: 6 x 6 con 2 processi <<< 
+Max Time: 0.000574 s (Rank: 1)
+>>> Test: 6 x 6 con 4 processi <<< 
+Max Time: 0.000869 s (Rank: 3)
+>>> Test: 6 x 6 con 6 processi <<< 
+Max Time: 0.002478 s (Rank: 5)
+>>> Test: 6 x 6 con 8 processi <<< 
+Max Time: 0.002319 s (Rank: 7)
+>>> Test: 6 x 6 con 10 processi <<< 
+Max Time: 0.001194 s (Rank: 3)
+>>> Test: 6 x 6 con 12 processi <<< 
+Max Time: 0.002416 s (Rank: 7)
+>>> Test: 10 x 10 con 1 processi <<< 
+Max Time: 0.000199 s (Rank: 0)
+>>> Test: 10 x 10 con 2 processi <<< 
+Max Time: 0.000468 s (Rank: 1)
+>>> Test: 10 x 10 con 4 processi <<< 
+Max Time: 0.001653 s (Rank: 2)
+>>> Test: 10 x 10 con 6 processi <<< 
+Max Time: 0.002551 s (Rank: 5)
+>>> Test: 10 x 10 con 8 processi <<< 
+Max Time: 0.003238 s (Rank: 6)
+>>> Test: 10 x 10 con 10 processi <<< 
+Max Time: 0.003428 s (Rank: 9)
+>>> Test: 10 x 10 con 12 processi <<< 
+Max Time: 0.001692 s (Rank: 2)
+>>> Test: 840 x 840 con 1 processi <<< 
+Max Time: 0.202072 s (Rank: 0)
+>>> Test: 840 x 840 con 2 processi <<< 
+Max Time: 0.215205 s (Rank: 0)
+>>> Test: 840 x 840 con 4 processi <<< 
+Max Time: 0.257120 s (Rank: 0)
+>>> Test: 840 x 840 con 6 processi <<< 
+Max Time: 0.249598 s (Rank: 0)
+>>> Test: 840 x 840 con 8 processi <<< 
+Max Time: 0.265299 s (Rank: 0)
+>>> Test: 840 x 840 con 10 processi <<< 
+Max Time: 0.280234 s (Rank: 0)
+>>> Test: 840 x 840 con 12 processi <<< 
+Max Time: 0.299479 s (Rank: 0)
+>>> Test: 1680 x 1680 con 1 processi <<< 
+Max Time: 0.798938 s (Rank: 0)
+>>> Test: 1680 x 1680 con 2 processi <<< 
+Max Time: 0.451197 s (Rank: 1)
+>>> Test: 1680 x 1680 con 4 processi <<< 
+Max Time: 0.546629 s (Rank: 1)
+>>> Test: 1680 x 1680 con 6 processi <<< 
+Max Time: 0.557969 s (Rank: 0)
+>>> Test: 1680 x 1680 con 8 processi <<< 
+Max Time: 0.587864 s (Rank: 0)
+>>> Test: 1680 x 1680 con 10 processi <<< 
+Max Time: 0.611096 s (Rank: 1)
+>>> Test: 1680 x 1680 con 12 processi <<< 
+Max Time: 0.652633 s (Rank: 1)
+>>> Test: 3360 x 3360 con 1 processi <<< 
+Max Time: 3.260657 s (Rank: 0)
+>>> Test: 3360 x 3360 con 2 processi <<< 
+Max Time: 1.733632 s (Rank: 0)
+>>> Test: 3360 x 3360 con 4 processi <<< 
+Max Time: 1.194823 s (Rank: 1)
+>>> Test: 3360 x 3360 con 6 processi <<< 
+Max Time: 0.825807 s (Rank: 1)
+>>> Test: 3360 x 3360 con 8 processi <<< 
+Max Time: 0.671684 s (Rank: 3)
+>>> Test: 3360 x 3360 con 10 processi <<< 
+Max Time: 0.585782 s (Rank: 6)
+>>> Test: 3360 x 3360 con 12 processi <<< 
+Max Time: 0.567779 s (Rank: 3)
+>>> Test: 13440 x 13440 con 1 processi <<< 
+Max Time: 54.217100 s (Rank: 0)
+>>> Test: 13440 x 13440 con 2 processi <<< 
+Max Time: 29.066921 s (Rank: 1)
+>>> Test: 13440 x 13440 con 4 processi <<< 
+Max Time: 19.378279 s (Rank: 2)
+>>> Test: 13440 x 13440 con 6 processi <<< 
+Max Time: 14.657219 s (Rank: 4)
+>>> Test: 13440 x 13440 con 8 processi <<< 
+Max Time: 11.824261 s (Rank: 7)
+>>> Test: 13440 x 13440 con 10 processi <<< 
+Max Time: 10.240159 s (Rank: 1)
+>>> Test: 13440 x 13440 con 12 processi <<< 
+Max Time: 10.229389 s (Rank: 3)
