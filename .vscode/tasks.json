@@ -3,7 +3,7 @@
   "tasks": [
     {
       "type": "shell",
-      "label": "MPI compile active file (mpicc)",
+      "label": "Docker: Compile (mpicc debug)",
       "command": "docker run -it --mount src=\"${fileDirname}\",target=/home,type=bind spagnuolocarmine/docker-mpi:latest mpicc -g /home/${fileBasename} -o /home/${fileBasenameNoExtension}",
       "presentation": {
         "reveal": "always"
@@ -13,20 +13,27 @@
     },
     {
       "type": "shell",
-      "label": "MPI run active file (mpicc && mpirun)",
-      "command": "docker run -it --mount src=\"${fileDirname}\",target=/home,type=bind spagnuolocarmine/docker-mpi:latest mpirun --allow-run-as-root -np ${input:np} /home/${fileBasenameNoExtension}",
-      "dependsOn": ["MPI compile active file (mpicc)"],
+      "label": "Docker: Compile (mpicc -O3)",
+      "command": "docker run -it --mount src=\"${fileDirname}\",target=/home,type=bind spagnuolocarmine/docker-mpi:latest mpicc -O3 /home/${fileBasename} -o /home/${fileBasenameNoExtension}",
       "presentation": {
         "reveal": "always"
       },
       "problemMatcher": ["$eslint-compact"],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
+      "group": "build"
     },
     {
-      "label": "Compile MPI C",
+      "type": "shell",
+      "label": "Docker: Compile -O3 & Run (mpirun)",
+      "command": "docker run -it --mount src=\"${fileDirname}\",target=/home,type=bind spagnuolocarmine/docker-mpi:latest mpirun --allow-run-as-root -np ${input:np} /home/${fileBasenameNoExtension}",
+      "dependsOn": ["Docker: Compile (mpicc -O3)"],
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": ["$eslint-compact"],
+      "group": "build"
+    },
+    {
+      "label": "Windows: Compile MPI C",
       "type": "shell",
       "command": "gcc",
       "args": [
@@ -36,8 +43,22 @@
           "-L", "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64",
           "-lmsmpi"
       ],
-      "group": { "kind": "build", "isDefault": true }
-  }
+      "group": "build"
+    },
+    {
+      "label": "Windows: Compile MPI C (-O3)",
+      "type": "shell",
+      "command": "gcc",
+      "args": [
+          "-O3",
+          "${file}",
+          "-o", "${fileDirname}\\${fileBasenameNoExtension}.exe",
+          "-I", "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Include",
+          "-L", "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64",
+          "-lmsmpi"
+      ],
+      "group": "build"
+    }
   ],
   "inputs": [
     {
