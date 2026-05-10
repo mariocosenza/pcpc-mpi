@@ -1,13 +1,28 @@
 provider "google" {
-  project = "pcpc-lab" 
+  project = "pcpc-lab"
   region  = "europe-north2"
 }
 
+resource "google_compute_resource_policy" "mpi_collocation_policy" {
+  name   = "mpi-compact-policy"
+  region = "us-west2"
+
+  group_placement_policy {
+    availability_domain_count = 1
+    collocation               = "COLLOCATED"
+  }
+}
+
 resource "google_compute_instance" "vm_instances" {
-  count        = 4
+  count        = 8
   name         = "instance-pcpc${count.index + 1}"
-  machine_type = "e2-micro" # Nota: molto limitata per compilare Intel MPI
-  zone         = "europe-north2-b"
+  machine_type = "c3-standard-8" 
+  zone         = "us-west2"
+
+
+  advanced_machine_features {
+    threads_per_core = 1
+  }
 
   scheduling {
     preemptible                 = true
@@ -16,33 +31,71 @@ resource "google_compute_instance" "vm_instances" {
     instance_termination_action = "STOP"
   }
 
+  resource_policies = [google_compute_resource_policy.mpi_collocation_policy.id]
+
   boot_disk {
+    auto_delete = true 
+    
     initialize_params {
-      image = "rocky-linux-cloud/rocky-linux-9" 
-      size  = 20 
-      type  = "pd-balanced" 
+      image = "rocky-linux-cloud/rocky-linux-10-optimized-gcp-v20260427"
+      size  = 40
+      type  = "hyperdisk-balanced"
+
+      provisioned_iops       = 3000
+      provisioned_throughput = 360
     }
   }
 
   network_interface {
     network = "default"
     access_config {
-      network_tier = "PREMIUM" 
+      network_tier = "PREMIUM"
     }
   }
 
-  labels = {
-    env = "pcpc-lab-mpi"
-  }
+  tags = ["mpi-node"]
 
   metadata = {
+    google-logging-enabled    = "false"
+    google-monitoring-enabled = "false"
     ssh-keys = "pcpc:${tls_private_key.ssh_key.public_key_openssh}"
   }
-
+  
   metadata_startup_script = templatefile("${path.module}/install.sh", {
     id_rsa     = tls_private_key.ssh_key.private_key_pem
     id_rsa_pub = tls_private_key.ssh_key.public_key_openssh
   })
+}
+
+resource "google_compute_firewall" "mpi_allow_internal" {
+  name    = "mpi-allow-internal"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+  }
+  allow {
+    protocol = "udp"
+  }
+  allow {
+    protocol = "icmp"
+  }
+  
+  source_tags = ["mpi-node"]
+  target_tags = ["mpi-node"]
+}
+
+resource "google_compute_firewall" "allow_ssh" {
+  name    = "allow-ssh-external"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+  target_tags   = ["mpi-node"]
 }
 
 resource "tls_private_key" "ssh_key" {
