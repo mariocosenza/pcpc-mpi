@@ -18,6 +18,11 @@ typedef struct {
 } Size_matrix;
 
 typedef struct {
+    double time;
+    int    rank;
+} TimeRankPair;
+
+typedef struct {
     Size_matrix size;
     void        *matrix;
     uint8_t        *recv_l_ghost;
@@ -379,6 +384,7 @@ int main(int argc, char **argv) {
     parse_args(argc, argv, &M, &N);
 
     MPI_Init(&argc, &argv);
+    double start_time = MPI_Wtime();
 
     int rank, num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -413,6 +419,15 @@ int main(int argc, char **argv) {
 
         run_worker(mpi_dims, split_comm, sizes, subsizes, starts);
         MPI_Comm_free(&split_comm);
+    }
+
+    TimeRankPair local_time = { MPI_Wtime() - start_time, rank };
+    TimeRankPair max_time;
+    
+    MPI_Reduce(&local_time, &max_time, 1, MPI_DOUBLE_INT, MPI_MAXLOC, 0, MPI_COMM_WORLD);
+
+    if (rank == 0) {
+        printf("Max Time: %f s (Rank: %d)\n", max_time.time, max_time.rank);
     }
 
     MPI_Finalize();
