@@ -399,7 +399,7 @@ int main(int argc, char **argv) {
     int num_procs;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
-
+    MPI_Barrier(MPI_COMM_WORLD);
     double start_time = MPI_Wtime();
 
     int compute_sz = num_procs - 1;

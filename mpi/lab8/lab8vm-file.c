@@ -384,6 +384,7 @@ int main(int argc, char **argv) {
     parse_args(argc, argv, &M, &N);
 
     MPI_Init(&argc, &argv);
+    MPI_Barrier(MPI_COMM_WORLD);
     double start_time = MPI_Wtime();
 
     int rank, num_procs;
