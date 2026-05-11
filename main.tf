@@ -1,6 +1,6 @@
 provider "google" {
   project = "pcpc-lab"
-  region  = "europe-north2"
+  region  = "us-west2"
 }
 
 resource "google_compute_resource_policy" "mpi_collocation_policy" {
