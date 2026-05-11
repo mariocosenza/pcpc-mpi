@@ -1,15 +1,18 @@
 #!/bin/bash
 
-# --- Configurazione ---
 EXE="./game_of_life.exe"
 LOG="scaling_results_linux.txt"
-PROCS=(1 2 4 6 8 10 12)
+
+PROCS=(1 2 4 6 8 10 12 16 20 24 28 32)
+VTUNE_PROCS=(4 8 12 16 20 24 28 32)
+EXT_PROCS=(12 24 32)
+VTUNE_TYPES=(hotspots memory-access threading hpc-performance)
+
 STD_SIZES=(6 10 840 1680 3360 13440)
 PINNING="-genv I_MPI_PIN_DOMAIN=core -genv I_MPI_PIN_ORDER=compact"
 
 echo "--- Test Scalabilita Start: $(date) ---" | tee $LOG
 
-# 1. TEST MATRICI STANDARD
 for s in "${STD_SIZES[@]}"; do
     echo -e "\n----------------------------------------------------"
     echo "DIMENSIONE MATRICE: ${s}x${s}"
@@ -22,26 +25,35 @@ for s in "${STD_SIZES[@]}"; do
     done
 done
 
-# 2. TEST MATRICI GRANDI (20k e 50k)
-echo -e "\n>>> AVVIO TEST MATRICI GRANDI <<<"
+echo -e "\n>>> AVVIO TEST MATRICI GRANDI (NO VTUNE) <<<"
 for p in "${PROCS[@]}"; do
-    # 20k a 100 generazioni
     echo "[BIG] Size: 20000x20000 | Processi: $p"
+    echo -e "\n>>> Test NORMALE: 20000x20000 con $p processi <<<" >> $LOG
     mpiexec -n $p $PINNING $EXE -M 20000 -N 20000 -G 100 -FN "matrix_20000x20000_seed1234.bin" 2>&1 | tee -a $LOG
     
-    # 50k a 20 generazioni
     echo "[BIG] Size: 50000x50000 | Processi: $p"
+    echo -e "\n>>> Test NORMALE: 50000x50000 con $p processi <<<" >> $LOG
     mpiexec -n $p $PINNING $EXE -M 50000 -N 50000 -G 20 -FN "matrix_50000x50000_seed1234.bin" 2>&1 | tee -a $LOG
 done
 
-# 3. TEST MATRICI ESTREME (100k)
-EXT_PROCS=(4 10)
-echo -e "\n>>> AVVIO TEST MATRICI ESTREME <<<"
+echo -e "\n>>> AVVIO TEST PROFILAZIONE VTUNE SULLA 20k <<<"
+for p in "${VTUNE_PROCS[@]}"; do
+    for vtype in "${VTUNE_TYPES[@]}"; do
+        echo "[VTUNE: $vtype] Size: 20000x20000 | Processi: $p"
+        VTUNE_DIR="./vtune_ris_${vtype}_20k_p${p}"
+        echo -e "\n>>> Test VTune ($vtype): 20000x20000 con $p processi <<<" >> $LOG
+        mpiexec -n $p $PINNING vtune -collect $vtype -data-limit=2000 -result-dir $VTUNE_DIR -- $EXE -M 20000 -N 20000 -G 100 -FN "matrix_20000x20000_seed1234.bin" 2>&1 | tee -a $LOG
+    done
+done
+
+echo -e "\n>>> AVVIO TEST MATRICI ESTREME (100k) <<<"
 for p in "${EXT_PROCS[@]}"; do
     echo "[EXTREME] 100kx50k | Processi: $p"
+    echo -e "\n>>> Test EXTREME: 100000x50000 con $p processi <<<" >> $LOG
     mpiexec -n $p $PINNING $EXE -M 100000 -N 50000 -G 5 -FN "matrix_100000x50000_seed1234.bin" 2>&1 | tee -a $LOG
     
     echo "[EXTREME] 100kx100k | Processi: $p"
+    echo -e "\n>>> Test EXTREME: 100000x100000 con $p processi <<<" >> $LOG
     mpiexec -n $p $PINNING $EXE -M 100000 -N 100000 -G 5 -FN "matrix_100000x100000_seed1234.bin" 2>&1 | tee -a $LOG
 done
 
