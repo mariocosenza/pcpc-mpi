@@ -23,7 +23,7 @@ if [ -f "/usr/bin/google_install_intelmpi" ]; then
     /usr/bin/google_install_intelmpi
 fi
 
-dnf install -y intel-oneapi-compiler-dpcpp-cpp intel-oneapi-mpi-devel
+dnf install -y intel-oneapi-compiler-dpcpp-cpp intel-oneapi-mpi-devel intel-oneapi-vtune
 
 SSH_DIR="/home/pcpc/.ssh"
 mkdir -p "$SSH_DIR"
