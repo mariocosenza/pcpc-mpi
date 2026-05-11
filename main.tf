@@ -17,11 +17,12 @@ resource "google_compute_instance" "vm_instances" {
   count        = 8
   name         = "instance-pcpc${count.index + 1}"
   machine_type = "c3-standard-8" 
-  zone         = "us-west2"
+  zone         = "us-west2-a"
 
 
   advanced_machine_features {
     threads_per_core = 1
+    enable_uefi_networking = true
   }
 
   scheduling {
