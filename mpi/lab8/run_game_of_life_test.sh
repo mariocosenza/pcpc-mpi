@@ -43,8 +43,15 @@ for p in "${VTUNE_PROCS[@]}"; do
     for vtype in "${VTUNE_TYPES[@]}"; do
         echo "[VTUNE: $vtype] Size: 20000x20000 | Processi: $p"
         VTUNE_DIR="./vtune_ris_${vtype}_20k_p${p}"
+        
+        # Logica condizionale: applica la modalità software solo ad hotspots
+        VTUNE_KNOB=""
+        if [ "$vtype" == "hotspots" ]; then
+            VTUNE_KNOB="-knob sampling-mode=sw"
+        fi
+
         echo -e "\n>>> Profilazione ($vtype) con $p processi <<<" >> $LOG_VTUNE
-        mpiexec -n $p -hostfile $HOSTS $PINNING vtune -collect $vtype -knob sampling-mode=sw -data-limit=2000 -result-dir $VTUNE_DIR -- $EXE -M 20000 -N 20000 -G 100 -FN "matrix_20000x20000_seed1234_pattern0.bin" 2>&1 | tee -a $LOG_VTUNE
+        mpiexec -n $p -hostfile $HOSTS $PINNING vtune -collect $vtype $VTUNE_KNOB -data-limit=2000 -result-dir $VTUNE_DIR -- $EXE -M 20000 -N 20000 -G 100 -FN "matrix_20000x20000_seed1234_pattern0.bin" 2>&1 | tee -a $LOG_VTUNE
     done
 done
 
