@@ -7,18 +7,35 @@ else
     echo "pcpc:root" | chpasswd
 fi
 
-export DEBIAN_FRONTEND=noninteractive
-dnf install -y vim htop git gcc gcc-c++ make openssh-clients openssh-server
+dnf install -y vim git gcc gcc-c++ make openssh-clients openssh-server
+
+cat <<EOF > /etc/yum.repos.d/oneAPI.repo
+[oneAPI]
+name=Intel oneAPI repository
+baseurl=https://yum.repos.intel.com/oneapi
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+EOF
 
 if [ -f "/usr/bin/google_install_intelmpi" ]; then
     /usr/bin/google_install_intelmpi
 fi
-dnf install -y intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic intel-oneapi-mpi-devel
+
+dnf install -y intel-oneapi-compiler-dpcpp-cpp intel-oneapi-mpi-devel
 
 SSH_DIR="/home/pcpc/.ssh"
 mkdir -p "$SSH_DIR"
-echo "${id_rsa}" > "$SSH_DIR/id_rsa"
-echo "${id_rsa_pub}" > "$SSH_DIR/id_rsa.pub"
+
+cat << 'EOF_RSA' > "$SSH_DIR/id_rsa"
+${id_rsa}
+EOF_RSA
+
+cat << 'EOF_PUB' > "$SSH_DIR/id_rsa.pub"
+${id_rsa_pub}
+EOF_PUB
+
 cat "$SSH_DIR/id_rsa.pub" >> "$SSH_DIR/authorized_keys"
 
 cat <<EOF > "$SSH_DIR/config"
@@ -30,7 +47,7 @@ EOF
 
 sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 echo "UseDNS no" >> /etc/ssh/sshd_config
-systemctl restart sshd
+systemctl enable --now sshd
 
 chown -R pcpc:pcpc "$SSH_DIR"
 chmod 700 "$SSH_DIR"
@@ -53,12 +70,12 @@ if [ -f "/opt/intel/oneapi/setvars.sh" ]; then
     source /opt/intel/oneapi/setvars.sh > /dev/null 2>&1
 fi
 
-cd "$REPO_DIR/lab8"
+cd "$REPO_DIR/mpi/lab8" || exit 1
 
-FLAGS="-O3 -xSAPPHIRERAPIDS -ipo -ffast-math -fiopenmp-simd -qopt-mem-layout-trans=3 -D_CRT_SECURE_NO_WARNINGS"
+FLAGS="-O3 -xSAPPHIRERAPIDS -ipo -ffast-math -fiopenmp-simd -qopt-mem-layout-trans=3"
 
-sudo -u pcpc mpiicx $FLAGS generate_seed.c -o generate_seed
-sudo -u pcpc mpiicx $FLAGS lab8vm-file.c -o game_of_life
+mpiicx $FLAGS generate_seed.c -o generate_seed
+mpiicx $FLAGS lab8vm-file.c -o game_of_life
 
 chown -R pcpc:pcpc "$REPO_DIR"
 ldconfig
