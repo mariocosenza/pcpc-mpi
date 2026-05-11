@@ -1,0 +1,232 @@
+
+----------------------------------------------------
+DIMENSIONE MATRICE: 6x6
+----------------------------------------------------
+[RUN] Size: 6x6 | Processi: 1
+Max Time: 0.000125 s (Rank: 0)
+[RUN] Size: 6x6 | Processi: 2
+Max Time: 0.001246 s (Rank: 0)
+[RUN] Size: 6x6 | Processi: 4
+Max Time: 0.000544 s (Rank: 0)
+[RUN] Size: 6x6 | Processi: 6
+Max Time: 0.957161 s (Rank: 5)
+[RUN] Size: 6x6 | Processi: 8
+Max Time: 0.643859 s (Rank: 5)
+[RUN] Size: 6x6 | Processi: 10
+Max Time: 0.630648 s (Rank: 5)
+[RUN] Size: 6x6 | Processi: 12
+Max Time: 0.496293 s (Rank: 5)
+[RUN] Size: 6x6 | Processi: 16
+Max Time: 3.107549 s (Rank: 7)
+[RUN] Size: 6x6 | Processi: 20
+Max Time: 3.657639 s (Rank: 7)
+[RUN] Size: 6x6 | Processi: 24
+Max Time: 3.515870 s (Rank: 5)
+[RUN] Size: 6x6 | Processi: 28
+Max Time: 4.983290 s (Rank: 25)
+[RUN] Size: 6x6 | Processi: 32
+Max Time: 7.233442 s (Rank: 21)
+
+----------------------------------------------------
+DIMENSIONE MATRICE: 10x10
+----------------------------------------------------
+[RUN] Size: 10x10 | Processi: 1
+Max Time: 0.000143 s (Rank: 0)
+[RUN] Size: 10x10 | Processi: 2
+Max Time: 0.001264 s (Rank: 0)
+[RUN] Size: 10x10 | Processi: 4
+Max Time: 0.000562 s (Rank: 0)
+[RUN] Size: 10x10 | Processi: 6
+Max Time: 0.235828 s (Rank: 5)
+[RUN] Size: 10x10 | Processi: 8
+Max Time: 0.612786 s (Rank: 5)
+[RUN] Size: 10x10 | Processi: 10
+Max Time: 1.048239 s (Rank: 9)
+[RUN] Size: 10x10 | Processi: 12
+Max Time: 0.269834 s (Rank: 9)
+[RUN] Size: 10x10 | Processi: 16
+Max Time: 1.648659 s (Rank: 15)
+[RUN] Size: 10x10 | Processi: 20
+Max Time: 2.924540 s (Rank: 5)
+[RUN] Size: 10x10 | Processi: 24
+Max Time: 2.829469 s (Rank: 23)
+[RUN] Size: 10x10 | Processi: 28
+Max Time: 5.693809 s (Rank: 27)
+[RUN] Size: 10x10 | Processi: 32
+Max Time: 7.681399 s (Rank: 7)
+
+----------------------------------------------------
+DIMENSIONE MATRICE: 840x840
+----------------------------------------------------
+[RUN] Size: 840x840 | Processi: 1
+Max Time: 0.274095 s (Rank: 0)
+[RUN] Size: 840x840 | Processi: 2
+Max Time: 0.279439 s (Rank: 0)
+[RUN] Size: 840x840 | Processi: 4
+Max Time: 0.274577 s (Rank: 0)
+[RUN] Size: 840x840 | Processi: 6
+Max Time: 0.398190 s (Rank: 0)
+[RUN] Size: 840x840 | Processi: 8
+Max Time: 0.309592 s (Rank: 5)
+[RUN] Size: 840x840 | Processi: 10
+Max Time: 0.883614 s (Rank: 0)
+[RUN] Size: 840x840 | Processi: 12
+Max Time: 0.893163 s (Rank: 0)
+[RUN] Size: 840x840 | Processi: 16
+Max Time: 1.230778 s (Rank: 7)
+[RUN] Size: 840x840 | Processi: 20
+Max Time: 1.925685 s (Rank: 18)
+[RUN] Size: 840x840 | Processi: 24
+Max Time: 5.904157 s (Rank: 5)
+[RUN] Size: 840x840 | Processi: 28
+Max Time: 6.320633 s (Rank: 7)
+[RUN] Size: 840x840 | Processi: 32
+Max Time: 6.208812 s (Rank: 11)
+
+----------------------------------------------------
+DIMENSIONE MATRICE: 1680x1680
+----------------------------------------------------
+[RUN] Size: 1680x1680 | Processi: 1
+Max Time: 1.100451 s (Rank: 0)
+[RUN] Size: 1680x1680 | Processi: 2
+Max Time: 0.550311 s (Rank: 0)
+[RUN] Size: 1680x1680 | Processi: 4
+Max Time: 0.551818 s (Rank: 1)
+[RUN] Size: 1680x1680 | Processi: 6
+Max Time: 1.768876 s (Rank: 1)
+[RUN] Size: 1680x1680 | Processi: 8
+Max Time: 1.226048 s (Rank: 0)
+[RUN] Size: 1680x1680 | Processi: 10
+Max Time: 2.918494 s (Rank: 0)
+[RUN] Size: 1680x1680 | Processi: 12
+Max Time: 3.505970 s (Rank: 1)
+[RUN] Size: 1680x1680 | Processi: 16
+Max Time: 6.673433 s (Rank: 0)
+[RUN] Size: 1680x1680 | Processi: 20
+Max Time: 8.786474 s (Rank: 0)
+[RUN] Size: 1680x1680 | Processi: 24
+Max Time: 24.199109 s (Rank: 1)
+[RUN] Size: 1680x1680 | Processi: 28
+Max Time: 27.362004 s (Rank: 0)
+[RUN] Size: 1680x1680 | Processi: 32
+Max Time: 42.944927 s (Rank: 0)
+
+----------------------------------------------------
+DIMENSIONE MATRICE: 3360x3360
+----------------------------------------------------
+[RUN] Size: 3360x3360 | Processi: 1
+Max Time: 4.378651 s (Rank: 0)
+[RUN] Size: 3360x3360 | Processi: 2
+Max Time: 2.196907 s (Rank: 0)
+[RUN] Size: 3360x3360 | Processi: 4
+Max Time: 1.110846 s (Rank: 0)
+[RUN] Size: 3360x3360 | Processi: 6
+Max Time: 1.980548 s (Rank: 0)
+[RUN] Size: 3360x3360 | Processi: 8
+Max Time: 1.200676 s (Rank: 1)
+[RUN] Size: 3360x3360 | Processi: 10
+Max Time: 2.031659 s (Rank: 1)
+[RUN] Size: 3360x3360 | Processi: 12
+Max Time: 2.142985 s (Rank: 8)
+[RUN] Size: 3360x3360 | Processi: 16
+Max Time: 30.086213 s (Rank: 4)
+[RUN] Size: 3360x3360 | Processi: 20
+Max Time: 52.797121 s (Rank: 0)
+[RUN] Size: 3360x3360 | Processi: 24
+Max Time: 88.900203 s (Rank: 5)
+[RUN] Size: 3360x3360 | Processi: 28
+Max Time: 244.721612 s (Rank: 8)
+[RUN] Size: 3360x3360 | Processi: 32
+Max Time: 205.163855 s (Rank: 7)
+----------------------------------------------------
+DIMENSIONE MATRICE: 13440x13440
+----------------------------------------------------
+[RUN] Size: 13440x13440 | Processi: 1
+Max Time: 72.531634 s (Rank: 0)
+[RUN] Size: 13440x13440 | Processi: 2
+Max Time: 36.354360 s (Rank: 1)
+[RUN] Size: 13440x13440 | Processi: 4
+Max Time: 18.218066 s (Rank: 2)
+[RUN] Size: 13440x13440 | Processi: 6
+Max Time: 26.333301 s (Rank: 1)
+[RUN] Size: 13440x13440 | Processi: 8
+Max Time: 19.446349 s (Rank: 1)
+[RUN] Size: 13440x13440 | Processi: 10
+Max Time: 24.704526 s (Rank: 9)
+[RUN] Size: 13440x13440 | Processi: 12
+Max Time: 20.930224 s (Rank: 10)
+[RUN] Size: 13440x13440 | Processi: 16
+Max Time: 21.876018 s (Rank: 5)
+[RUN] Size: 13440x13440 | Processi: 20
+Max Time: 28.896788 s (Rank: 10)
+[RUN] Size: 13440x13440 | Processi: 24
+Max Time: 45.445516 s (Rank: 3)
+[RUN] Size: 13440x13440 | Processi: 28
+Max Time: 32.748975 s (Rank: 21)
+[RUN] Size: 13440x13440 | Processi: 32
+Max Time: 56.429784 s (Rank: 17)
+
+[BIG] Size: 20000x20000 | Processi: 1
+Max Time: 154.002015 s (Rank: 0)
+[BIG] Size: 50000x50000 | Processi: 1
+Max Time: 257.057678 s (Rank: 0)
+[BIG] Size: 20000x20000 | Processi: 2
+Max Time: 77.144119 s (Rank: 0)
+[BIG] Size: 50000x50000 | Processi: 2
+Max Time: 128.600447 s (Rank: 0)
+[BIG] Size: 20000x20000 | Processi: 4
+Max Time: 38.645497 s (Rank: 3)
+[BIG] Size: 50000x50000 | Processi: 4
+Max Time: 64.384635 s (Rank: 2)
+
+>>> AVVIO TEST MATRICI GRANDI (NO VTUNE) <<<
+[BIG] Size: 20000x20000 | Processi: 6
+Max Time: 25.746389 s (Rank: 5)
+[BIG] Size: 50000x50000 | Processi: 6
+Max Time: 42.908927 s (Rank: 5)
+[BIG] Size: 20000x20000 | Processi: 8
+Max Time: 19.358368 s (Rank: 0)
+[BIG] Size: 50000x50000 | Processi: 8
+Max Time: 32.204643 s (Rank: 5)
+[BIG] Size: 20000x20000 | Processi: 10
+Max Time: 15.533260 s (Rank: 9)
+[BIG] Size: 50000x50000 | Processi: 10
+Max Time: 25.789322 s (Rank: 8)
+[BIG] Size: 20000x20000 | Processi: 12
+Max Time: 12.951661 s (Rank: 7)
+[BIG] Size: 50000x50000 | Processi: 12
+Max Time: 21.527496 s (Rank: 7)
+[BIG] Size: 20000x20000 | Processi: 16
+Max Time: 9.729527 s (Rank: 10)
+[BIG] Size: 50000x50000 | Processi: 16
+Max Time: 16.158738 s (Rank: 15)
+[BIG] Size: 20000x20000 | Processi: 20
+Max Time: 7.818630 s (Rank: 9)
+[BIG] Size: 50000x50000 | Processi: 20
+Max Time: 12.925678 s (Rank: 17)
+[BIG] Size: 20000x20000 | Processi: 24
+Max Time: 6.528759 s (Rank: 18)
+[BIG] Size: 50000x50000 | Processi: 24
+Max Time: 10.785842 s (Rank: 9)
+[BIG] Size: 20000x20000 | Processi: 28
+Max Time: 5.583013 s (Rank: 10)
+[BIG] Size: 50000x50000 | Processi: 28
+Max Time: 9.242876 s (Rank: 27)
+[BIG] Size: 20000x20000 | Processi: 32
+Max Time: 4.899368 s (Rank: 6)
+[BIG] Size: 50000x50000 | Processi: 32
+Max Time: 8.104802 s (Rank: 10)
+
+>>> AVVIO TEST MATRICI ESTREME (100k) <<<
+[EXTREME] 100kx50k | Processi: 12
+Max Time: 12.085726 s (Rank: 7)
+[EXTREME] 100kx100k | Processi: 12
+Max Time: 24.105806 s (Rank: 8)
+[EXTREME] 100kx50k | Processi: 24
+Max Time: 6.083042 s (Rank: 9)
+[EXTREME] 100kx100k | Processi: 24
+Max Time: 12.112872 s (Rank: 11)
+[EXTREME] 100kx50k | Processi: 32
+Max Time: 4.556872 s (Rank: 19)
+[EXTREME] 100kx100k | Processi: 32
+Max Time: 9.089351 s (Rank: 27)

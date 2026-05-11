@@ -1,0 +1,57 @@
+
+7-Zip 25.01 (x64) : Copyright (c) 1999-2025 Igor Pavlov : 2025-08-03
+ 64-bit locale=en_US.UTF-8 Threads:4 OPEN_MAX:1024
+
+Compiler:  ver:14.3.1 20250617 (Red Hat 14.3.1-2) GCC 14.3.1 : AVX2
+Linux : 6.12.0-124.49.1+2.1.el10_1_ciq.x86_64 : #1 SMP PREEMPT_DYNAMIC Fri Apr 10 20:38:36 UTC 2026 : x86_64 : KVMKVMKVM : [8B]
+PageSize:4KB THP:always hwcap:6 hwcap2:2
+Intel(R) Xeon(R) Platinum 8481C CPU @ 2.70GHz
+(806F8)
+
+1T CPU Freq (MHz):  2969  2975  2977  2974  2974  2976  2976
+2T CPU Freq (MHz): 200% 2970   199% 2973
+4T CPU Freq (MHz): 398% 2972   399% 2974
+
+RAM size:   31829 MB,  # CPU hardware threads:   4
+RAM usage:    889 MB,  # Benchmark threads:      4
+
+                       Compressing  |                  Decompressing
+Dict     Speed Usage    R/U Rating  |      Speed Usage    R/U Rating
+         KiB/s     %   MIPS   MIPS  |      KiB/s     %   MIPS   MIPS
+
+22:      28778   355   7883  27996  |     162509   398   3487  13864
+23:      28772   371   7898  29315  |     161453   398   3506  13970
+24:      28011   376   8002  30118  |     159598   398   3515  14006
+25:      26820   372   8239  30622  |     157496   398   3521  14017
+----------------------------------  | ------------------------------
+Avr:     28095   369   8006  29513  |     160264   398   3507  13964
+Tot:             383   5756  21739
+[proge@instance-pcpc2 Geekbench-6.3.0-Linux]$ 7z b -mmt1
+
+7-Zip 25.01 (x64) : Copyright (c) 1999-2025 Igor Pavlov : 2025-08-03
+ 64-bit locale=en_US.UTF-8 Threads:4 OPEN_MAX:1024
+
+ mt1
+Compiler:  ver:14.3.1 20250617 (Red Hat 14.3.1-2) GCC 14.3.1 : AVX2
+Linux : 6.12.0-124.49.1+2.1.el10_1_ciq.x86_64 : #1 SMP PREEMPT_DYNAMIC Fri Apr 10 20:38:36 UTC 2026 : x86_64 : KVMKVMKVM : [8B]
+PageSize:4KB THP:always hwcap:6 hwcap2:2
+Intel(R) Xeon(R) Platinum 8481C CPU @ 2.70GHz
+(806F8)
+
+1T CPU Freq (MHz):  2964  2966  2973  2971  2974  2974  2974
+
+RAM size:   31829 MB,  # CPU hardware threads:   4
+RAM usage:    437 MB,  # Benchmark threads:      1
+
+                       Compressing  |                  Decompressing
+Dict     Speed Usage    R/U Rating  |      Speed Usage    R/U Rating
+         KiB/s     %   MIPS   MIPS  |      KiB/s     %   MIPS   MIPS
+
+22:       6143    99   6010   5977  |      40742   100   3486   3479
+23:       5232   100   5324   5331  |      40435   100   3515   3500
+24:       4764   100   5141   5123  |      40033   100   3522   3514
+25:       4472   100   5121   5107  |      39602   100   3529   3525
+----------------------------------  | ------------------------------
+Avr:      5153   100   5399   5384  |      40203   100   3513   3505
+Tot:             100   4456   4444
+[proge@instance-pcpc2 Geekbench-6.3.0-Linux]$
