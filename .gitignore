@@ -1,6 +1,7 @@
 *.exe
 *.o
 *.bin
+mpi/lab8/results/linux/vtune*/
 mpi/lab8/vtune*/
 mpi/lab8/lab8-ex/vtune*/
 .terraform.lock.hcl
