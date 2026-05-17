@@ -22,7 +22,7 @@
 20k * 20k n4 PROF 100GEN = Max Time: 42.029551 s (Rank: 0)
 20k * 20k n10 PROF =  Max Time: 22.085944 s (Rank: 1)
 
-50k * 50k n1 20GEN = Max Time: 493.923743 s (Rank: 0)
+50k * 50k n1 20GEN = Max Time: 374.516012 s (Rank: 0)
 50k * 50k n2 20GEN = Max Time: 140.343401 s (Rank: 0)
 50k * 50k n4 20GEN = Max Time: 73.434615 s (Rank: 0)
 50k * 50k n6 20GEN = Max Time: 56.176680 s (Rank: 1)
