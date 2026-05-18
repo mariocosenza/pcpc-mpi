@@ -23,7 +23,21 @@ void write_matrix_to_file_fast(uint32_t M, uint32_t N) {
         exit(EXIT_FAILURE);
     }
 
-    if (PATTERN == 0) srand(SEED);
+    if (PATTERN == 0) {
+        srand(SEED);
+    }
+    else if (PATTERN == 4) {
+        printf("Inserisci la matrice %u x %u (0 o 1):\n", M, N);
+        printf("Esempio:\n");
+        for (uint32_t r = 0; r < 4; r++) {
+            for (uint32_t c = 0; c < 4; c++) {
+                printf("%c ", (r == 1 && c == 2) || (r == 2 && c >= 1 && c <= 3) ? '1' : '0');
+            }
+            printf("\n");
+        }
+    }
+     
+
 
     for (uint32_t r = 0; r < M; r++) {
         if (PATTERN != 0) {
@@ -45,6 +59,16 @@ void write_matrix_to_file_fast(uint32_t M, uint32_t N) {
         } else if (PATTERN == 3 && M >= 2 && N >= 2) {
             // Block center
             if (r == M / 2 || r == M / 2 + 1) { row_buffer[N / 2] = 1; row_buffer[N / 2 + 1] = 1; }
+        } else if (PATTERN == 4) {
+            for (uint32_t c = 0; c < N; c++) {
+                scanf("%hhu", &row_buffer[c]);
+                if (row_buffer[c] != 0 && row_buffer[c] != 1) {
+                    fprintf(stderr, "Input non valido alla riga %u, colonna %u: %hhu\n", r, c, row_buffer[c]);
+                    free(row_buffer);
+                    fclose(fp);
+                    exit(EXIT_FAILURE);
+                }
+            }
         }
 
         fwrite(row_buffer, sizeof(uint8_t), N, fp);
@@ -53,40 +77,9 @@ void write_matrix_to_file_fast(uint32_t M, uint32_t N) {
     free(row_buffer);
     fclose(fp);
     
-    const char* pattern_names[] = {"Random", "Glider", "Blinker", "Block"};
+    const char* pattern_names[] = {"Random", "Glider", "Blinker", "Block", "Custom"};
     printf("Matrice %u x %u scritta su %s (Pattern: %s)\n", M, N, filename, pattern_names[PATTERN]);
 }
-
-void print_while_reading_matrix(uint32_t M, uint32_t N) {
-    FILE *fp = fopen("full_matrix.bin", "rb");
-    if (!fp) {
-        perror("Errore nell'apertura del file");
-        exit(EXIT_FAILURE);
-    }
-
-    uint8_t *row_buffer = malloc(N * sizeof(uint8_t));
-    if (!row_buffer) {
-        printf("Errore di allocazione memoria per la riga\n");
-        fclose(fp);
-        exit(EXIT_FAILURE);
-    }
-
-    for (uint32_t r = 0; r < M; r++) {
-        if (fread(row_buffer, sizeof(uint8_t), N, fp) != N) {
-            fprintf(stderr, "Errore nella lettura della riga %u\n", r);
-            break;
-        }
-        for (uint32_t c = 0; c < N; c++) {
-            printf("%c", row_buffer[c] ? 'O' : '.');
-        }
-        printf("\n");
-    }
-
-    free(row_buffer);
-    fclose(fp);
-}
-
-
 
 void parse_args(int argc, char **argv, uint32_t *M, uint32_t *N) {
     int opt;
@@ -96,7 +89,16 @@ void parse_args(int argc, char **argv, uint32_t *M, uint32_t *N) {
             case 'M': *M = (uint32_t)atoi(optarg); break;
             case 'S': SEED = (uint32_t)atoi(optarg); break;
             case 'P': PATTERN = atoi(optarg); break;
-            case 'R' : READ = 1; break;
+            case 'PM': PATTERN = 4; break;
+            case '?':
+            default:
+                fprintf(stderr, "Usage: %s [-M rows] [-N cols] [-S seed] [-P pattern] [-R]\n", argv[0]);
+                fprintf(stderr, "  -M rows    Number of rows (default: 100)\n");
+                fprintf(stderr, "  -N cols    Number of columns (default: 100)\n");
+                fprintf(stderr, "  -S seed    Random seed for pattern 0 (default: 1234)\n");
+                fprintf(stderr, "  -P pattern Pattern type (0=random, 1=glider, 2=blinker, 3=block, 4=custom) (default: 0)\n");
+                fprintf(stderr, "  -PM        Use custom pattern input mode (same as -P 4)\n");
+                exit(EXIT_FAILURE);
         }
     }
 }
@@ -106,11 +108,9 @@ int main(int argc, char **argv) {
     uint32_t N = 100;
     parse_args(argc, argv, &M, &N);
     
-    if (READ) {
-        print_while_reading_matrix(M, N);
-    } else {
-        write_matrix_to_file_fast(M, N);
-    }
+  
+    write_matrix_to_file_fast(M, N);
     
+
     return 0;
 }

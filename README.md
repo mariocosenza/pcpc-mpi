@@ -58,6 +58,13 @@ The internal parallel mechanics, halo exchanges, and boundary computations are s
 ### Dynamic Resource Allocation
 The codebase adapts dynamically to the execution environment at runtime. The system scales its horizontal boundaries seamlessly to match the exact process count designated by the user during launch execution (e.g., `mpirun -np <P>`).
 
+### Cartesian Process Topology
+The worker processes are arranged on a two-dimensional MPI Cartesian grid. The code first chooses the largest process count that still satisfies the minimum local matrix size constraints, then derives the grid shape with `MPI_Dims_create(compute_sz, 2, mpi_dims)`. This produces a row/column layout that reflects the available ranks rather than a hardcoded mesh.
+
+Each worker then creates a Cartesian communicator with `MPI_Cart_create(split_comm, 2, mpi_dims, (int[]){0, 0}, 0, &cart_comm)`. The zero periodicity flags mean the topology is not wrapped around at the borders, so the ranks at the edges of the grid have missing neighbors. Those neighbor relationships are recovered with `MPI_Cart_shift` and are used directly for the halo exchanges on the top, bottom, left, and right borders.
+
+This layout keeps the communication pattern explicit and easy to reason about: each rank exchanges ghost cells only with the ranks that are adjacent to it in the 2D process grid, and the same Cartesian communicator is also reused for collective file I/O on the final matrix.
+
 ### Final State Persistence
 Upon completing the final iteration, the distributed matrix partitions are automatically gathered and stitched back together on the master node to reconstruct the complete final generation, which is then committed to persistent storage.
 
@@ -373,7 +380,7 @@ int main(int argc, char **argv) {
 </details>
 
 <details>
-<summary><u>Details section</u>: the last utility generates the seed matrix used as input for the simulation. It supports the following parameters: `-M <rows>`, `-N <cols>`, `-S <seed>` for deterministic random generation, `-P <pattern>` for predefined shapes (`0` random, `1` glider, `2` blinker, `3` block), and `-R` to read `full_matrix.bin` and print it instead of creating a new file. TODO: add `-PM` to manually draw the matrix.</summary>
+<summary><u>Details section</u>: the last utility generates the seed matrix used as input for the simulation. It supports the following parameters: `-M <rows>`, `-N <cols>`, `-S <seed>` for deterministic random generation, `-P <pattern>` for predefined shapes (`0` random, `1` glider, `2` blinker, `3` block, `4` custom/manual input), `-PM` as a shortcut for the custom/manual input mode, and `-R` to read `full_matrix.bin` and print it instead of creating a new file. In custom mode, the program prompts for each cell value and writes the entered 0/1 matrix directly to disk.</summary>
 
 ```c
 void write_matrix_to_file_fast(uint32_t M, uint32_t N) {
