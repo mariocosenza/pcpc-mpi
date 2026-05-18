@@ -7,7 +7,7 @@
 [![Contributor](https://img.shields.io/badge/Contributor-mariocosenza-blue?style=flat-square&logo=github)](https://github.com/mariocosenza)
 [![License: GPL v2](https://img.shields.io/badge/License-GPLv2-blue?style=flat-square)](LICENSE)
 
-This repository hosts the laboratory assignments and the final capstone project for the **Parallel Programming and Parallel Computing** course (A.Y. 2026) at the University of Salerno, supervised by Prof. [@spagnuolocarmine](https://github.com/spagnuolocarmine).
+This repository hosts the laboratory assignments and the final capstone project for the **Programmazione Concorrente, Parallela e su Cloud** course (English: *Concurrent, Parallel and Cloud Programming*) (A.Y. 2026) at the University of Salerno, supervised by Prof. [@spagnuolocarmine](https://github.com/spagnuolocarmine).
 
 To ensure the reproducibility of the experiments, the project leverages Infrastructure as Code (IaC). The repository includes a Terraform configuration script (`main.tf`) designed to automatically provision a compute cluster on the Google Cloud Platform (GCP). For comprehensive deployment instructions, please refer to the *How to Set Up the Experiment* section.
 
