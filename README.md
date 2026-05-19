@@ -19,7 +19,7 @@ All subsequent sections of this documentation will focus exclusively on the arch
 
 Click a badge to jump to the corresponding section.
 
-[![Conway's Game of Life](https://img.shields.io/badge/Conway%27s%20Game%20of%20Life-1f77b4?style=flat-square)](#conways-game-of-life) [![Solution Requirements](https://img.shields.io/badge/Solution%20Requirements-2ca02c?style=flat-square)](#solution-requirements) [![Correctness TODO](https://img.shields.io/badge/Correctness%20TODO-f39c12?style=flat-square)](#correctness-todo)
+[![Conway's Game of Life](https://img.shields.io/badge/Conway%27s%20Game%20of%20Life-1f77b4?style=flat-square)](#conways-game-of-life) [![Solution Requirements](https://img.shields.io/badge/Solution%20Requirements-2ca02c?style=flat-square)](#solution-requirements) [![Correctness](https://img.shields.io/badge/Correctness-f39c12?style=flat-square)](#correctness)
 
 [![Experimental Setup](https://img.shields.io/badge/Experimental%20Setup%20%26%20Benchmark%20Methodology-7f8c8d?style=flat-square)](#experimental-setup--benchmark-methodology) [![Hardware Configuration](https://img.shields.io/badge/Hardware%20Configuration-34495e?style=flat-square)](#hardware-configuration-for-the-benchmark) [![Running the Test](https://img.shields.io/badge/Running%20the%20Test-d35400?style=flat-square)](#running-the-test)
 
@@ -380,7 +380,7 @@ int main(int argc, char **argv) {
 </details>
 
 <details>
-<summary><u>Details section</u>: the last utility generates the seed matrix used as input for the simulation. It supports the following parameters: `-M <rows>`, `-N <cols>`, `-S <seed>` for deterministic random generation, `-P <pattern>` for predefined shapes (`0` random, `1` glider, `2` blinker, `3` block, `4` custom/manual input), `-PM` as a shortcut for the custom/manual input mode, and `-R` to read `full_matrix.bin` and print it instead of creating a new file. In custom mode, the program prompts for each cell value and writes the entered 0/1 matrix directly to disk.</summary>
+<summary><u>Details section</u>: the last utility generates the seed matrix used as input for the simulation. It supports the following parameters: `-M <rows>`, `-N <cols>`, `-S <seed>` for deterministic random generation, `-P <pattern>` for predefined shapes (`0` random, `1` glider, `2` blinker, `3` block, `4` custom/manual input), and `-R` to read `full_matrix.bin` and print it instead of creating a new file. In custom mode, the program prompts for each cell value and writes the entered 0/1 matrix directly to disk.</summary>
 
 ```c
 void write_matrix_to_file_fast(uint32_t M, uint32_t N) {
@@ -445,11 +445,33 @@ Input matrices generated for the simulation follow the naming pattern `matrix_<r
 
 The main runtime output produced by the MPI application is `full_matrix.bin`, which stores the complete final generation after the distributed execution ends. Together, these names make it easy to trace a run from its input matrix to its final result.
 
-## Correctness TODO
+## Correctness
 
-- TODO: add a short formal correctness argument for the domain decomposition, halo exchange, and final gather.
-- TODO: document the edge cases that still need explicit coverage, especially `1xN`, `Mx1`, and `G = 0` runs.
-- TODO: add a validation checklist that compares the generated matrix, the final output, and the expected live-cell counts.
+The generator, the MPI runtime, and the visual tools all use the same raw matrix format: a file is just $M \times N$ bytes written row by row, with one `uint8_t` per cell and no header. That is why a matrix created by [generate_seed.c](mpi/lab8/generate_seed.c) can be consumed directly by [lab8vm-file.c](mpi/lab8/lab8vm-file.c) and by the visual tools.
+
+## Code Correctness and Validation Report
+
+The correctness of this 2D parallel MPI implementation of Conway's Game of Life was validated through deterministic pattern tests, visual cross-checking, boundary-focused checks, and binary output comparison.
+
+1. Local rule validation with static patterns. The transition functions [play_inner_cells](mpi/lab8/lab8vm-file.c) and [play_border_cells](mpi/lab8/lab8vm-file.c) were checked with classic Game of Life structures. The Block still life remained unchanged across multiple generations, confirming stable survival behavior. The Blinker oscillator alternated between its vertical and horizontal states and returned to its initial configuration on even generations, confirming the expected $23/3$ Conway rules.
+
+2. Validation of domain decomposition and ghost-cell exchange. Boundary behavior was exercised with patterns placed across process borders. A block split between two adjacent ranks remained stable, which supports the correctness of the top/bottom and left/right halo exchanges. A glider crossing the intersection of four MPI subdomains preserved its shape and motion, which is consistent with the ordered exchange sequence used by the worker routine.
+
+3. Manual cross-check with a visual simulator. Selected generated configurations were compared against the same initial setups in PlayGameOfLife.com. The observed evolution matched the expected step-by-step behavior of Conway's Game of Life for the tested cases.
+
+4. Pattern selection and scope. The repository focuses on representative structural patterns rather than exhaustively enumerating every known Life object. In practice, testing still lifes, oscillators, and moving patterns covers the core local interactions exercised by the implementation.
+
+5. Differential output comparison. For a fixed random seed, the final output files produced with different MPI process counts were compared using SHA-256 on Windows. The matching hashes show that, for the tested inputs, the parallel execution produced bitwise identical final states across those process counts.
+
+`pattern 4` in [generate_seed.c](mpi/lab8/generate_seed.c) is the manual-input mode. It reads exactly one `0` or `1` value for each cell, validates the input, and writes the resulting grid in row-major order to `matrix_<rows>x<cols>_seed<seed>_pattern4.bin`. Because the output layout matches the runtime layout, the file can be loaded without any conversion step.
+
+[view.c](mpi/lab8/view.c) reads the same raw byte layout with a plain `fread`, so it can display matrices generated by [generate_seed.c](mpi/lab8/generate_seed.c) as long as the user selects the correct dimensions for the file being opened. In other words, the viewer does not expect a header or metadata block; it expects the exact same flat matrix encoding used by the MPI code.
+
+Example of a generated 5x5 pattern:
+
+<p align="center">
+    <img src="mpi/lab8/results/images/random5x5.gif" alt="random5x5" width="640">
+</p>
 
 ## Experimental Setup & Benchmark Methodology
 
