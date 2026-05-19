@@ -453,11 +453,11 @@ The generator, the MPI runtime, and the visual tools all use the same raw matrix
 
 The correctness of this 2D parallel MPI implementation of Conway's Game of Life was validated through deterministic pattern tests, visual cross-checking, boundary-focused checks, and binary output comparison.
 
-1. Local rule validation with static patterns. The transition functions [play_inner_cells](mpi/lab8/lab8vm-file.c) and [play_border_cells](mpi/lab8/lab8vm-file.c) were checked with classic Game of Life structures. The Block still life remained unchanged across multiple generations, confirming stable survival behavior. The Blinker oscillator alternated between its vertical and horizontal states and returned to its initial configuration on even generations, confirming the expected $23/3$ Conway rules.
+1. Local rule validation with static patterns. The transition functions [play_inner_cells](mpi/lab8/lab8vm-file.c) and [play_border_cells](mpi/lab8/lab8vm-file.c) were checked with classic Game of Life structures. The Block still life remained unchanged across multiple generations, confirming stable survival behavior. The Blinker oscillator alternated between its vertical and horizontal states and returned to its initial configuration on even generations, confirming the expected live-cell transition rules.
 
 2. Validation of domain decomposition and ghost-cell exchange. Boundary behavior was exercised with patterns placed across process borders. A block split between two adjacent ranks remained stable, which supports the correctness of the top/bottom and left/right halo exchanges. A glider crossing the intersection of four MPI subdomains preserved its shape and motion, which is consistent with the ordered exchange sequence used by the worker routine.
 
-3. Manual cross-check with a visual simulator. Selected generated configurations were compared against the same initial setups in PlayGameOfLife.com. The observed evolution matched the expected step-by-step behavior of Conway's Game of Life for the tested cases.
+3. Manual cross-check with a visual simulator. Selected generated configurations were compared against the same initial setups in [PlayGameOfLife.com](https://playgameoflife.com/). The observed evolution matched the expected step-by-step behavior of Conway's Game of Life for the tested cases.
 
 4. Pattern selection and scope. The repository focuses on representative structural patterns rather than exhaustively enumerating every known Life object. In practice, testing still lifes, oscillators, and moving patterns covers the core local interactions exercised by the implementation.
 
