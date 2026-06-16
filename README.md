@@ -6,6 +6,7 @@
 
 [![Contributor](https://img.shields.io/badge/Contributor-mariocosenza-blue?style=flat-square&logo=github)](https://github.com/mariocosenza)
 [![License: GPL v2](https://img.shields.io/badge/License-GPLv2-blue?style=flat-square)](LICENSE)
+[![English version](https://img.shields.io/badge/English-README%20EN-007ACC?style=flat-square)](README.md) [![Versione italiana](https://img.shields.io/badge/Italiano-README%20IT-2E8B57?style=flat-square)](README-it.md)
 
 This repository hosts the laboratory assignments and the final capstone project for the **Programmazione Concorrente, Parallela e su Cloud** course (English: *Concurrent, Parallel and Cloud Programming*) (A.Y. 2026) at the University of Salerno, supervised by Prof. [@spagnuolocarmine](https://github.com/spagnuolocarmine).
 
