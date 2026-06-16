@@ -8,7 +8,7 @@
 [![License: GPL v2](https://img.shields.io/badge/License-GPLv2-blue?style=flat-square)](LICENSE)
 [![English version](https://img.shields.io/badge/English-README%20EN-007ACC?style=flat-square)](README.md) [![Versione italiana](https://img.shields.io/badge/Italiano-README%20IT-2E8B57?style=flat-square)](README-it.md)
 
-Questo repository raccoglie gli esercizi di laboratorio e il progetto finale del corso di **Programmazione Concorrente, Parallela e su Cloud** (English: *Concurrent, Parallel and Cloud Programming*) (A.A. 2026) presso l'Universita di Salerno, sotto la supervisione del Prof. [@spagnuolocarmine](https://github.com/spagnuolocarmine).
+Questo repository raccoglie gli esercizi di laboratorio e il progetto finale del corso di **Programmazione Concorrente, Parallela e su Cloud** (A.A. 2026) presso l'Universita di Salerno, sotto la supervisione del Prof. [@spagnuolocarmine](https://github.com/spagnuolocarmine).
 
 Per garantire la riproducibilita degli esperimenti, il progetto sfrutta Infrastructure as Code (IaC). Nel repository e presente uno script di configurazione Terraform (`main.tf`) pensato per provisionare automaticamente un cluster di calcolo su Google Cloud Platform (GCP). Per istruzioni complete di deployment, fai riferimento alla sezione *Come configurare l'esperimento*.
 
