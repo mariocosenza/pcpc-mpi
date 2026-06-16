@@ -67,8 +67,6 @@ Each worker then creates a Cartesian communicator with `MPI_Cart_create(split_co
 This layout keeps the communication pattern explicit and easy to reason about: each rank exchanges ghost cells only with the ranks that are adjacent to it in the 2D process grid, and the same Cartesian communicator is also reused for collective file I/O on the final matrix.
 
 ### Final State Persistence
-Upon completing the final iteration, the distributed matrix partitions are automatically gathered and stitched back together on the master node to reconstruct the complete final generation, which is then committed to persistent storage.
-
 All of the implementation snippets below are taken from [mpi/lab8/lab8vm-file.c](mpi/lab8/lab8vm-file.c). They are grouped inside hidden `<details>` blocks that stay collapsed by default, so the explanation stays compact until you expand each section.
 
 <details>

@@ -67,8 +67,6 @@ Ogni worker crea poi un comunicatore cartesiano con `MPI_Cart_create(split_comm,
 Questa disposizione mantiene il pattern di comunicazione esplicito e facile da ragionare: ogni rank scambia celle fantasma solo con i rank adiacenti nella griglia di processo 2D, e lo stesso comunicatore cartesiano viene riutilizzato anche per l'I/O collettivo del file della matrice finale.
 
 ### Persistenza dello stato finale
-Al termine dell'ultima iterazione, le partizioni distribuite della matrice vengono raccolte automaticamente e ricomposte sul nodo master per ricostruire la generazione finale completa, che viene poi salvata su storage persistente.
-
 Tutti gli snippet di implementazione riportati sotto sono tratti da [mpi/lab8/lab8vm-file.c](mpi/lab8/lab8vm-file.c). Sono raggruppati in blocchi `<details>` nascosti che rimangono chiusi di default, cosi la spiegazione resta compatta finche non espandi ogni sezione.
 
 <details>
