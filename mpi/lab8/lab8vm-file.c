@@ -25,10 +25,10 @@ typedef struct {
 typedef struct {
     Size_matrix size;
     void        *matrix;
-    uint8_t        *recv_l_ghost;
-    uint8_t        *recv_r_ghost;
-    uint8_t        *recv_t_ghost;
-    uint8_t        *recv_b_ghost;
+    uint8_t     *recv_l_ghost;
+    uint8_t     *recv_r_ghost;
+    uint8_t     *recv_t_ghost;
+    uint8_t     *recv_b_ghost;
 } Game_matrix;
 
 #ifdef _WIN32   
