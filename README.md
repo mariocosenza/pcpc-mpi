@@ -1,4 +1,4 @@
-# Parallel Programming & Distributed Computing
+# Conway's Game of Life in MPI: Parallel Programming & Distributed Computing
 
 <p align="center">
     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Gospers_glider_gun.gif" alt="Conway's Game of Life animation" width="320">
@@ -8,7 +8,7 @@
 [![License: GPL v2](https://img.shields.io/badge/License-GPLv2-blue?style=flat-square)](LICENSE)
 [![English version](https://img.shields.io/badge/English-README%20EN-007ACC?style=flat-square)](README.md) [![Versione italiana](https://img.shields.io/badge/Italiano-README%20IT-2E8B57?style=flat-square)](README-it.md)
 
-This repository hosts the laboratory assignments and the final capstone project for the **Programmazione Concorrente, Parallela e su Cloud** course (English: *Concurrent, Parallel and Cloud Programming*) (A.Y. 2026) at the University of Salerno, supervised by Prof. [@spagnuolocarmine](https://github.com/spagnuolocarmine).
+This repository hosts the laboratory assignments and the final capstone project for the **Programmazione Concorrente, Parallela e su Cloud** course (A.Y. 2026) at the University of Salerno, supervised by Prof. [@spagnuolocarmine](https://github.com/spagnuolocarmine).
 
 To ensure the reproducibility of the experiments, the project leverages Infrastructure as Code (IaC). The repository includes a Terraform configuration script (`main.tf`) designed to automatically provision a compute cluster on the Google Cloud Platform (GCP). For comprehensive deployment instructions, please refer to the *How to Set Up the Experiment* section.
 
