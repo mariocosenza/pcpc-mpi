@@ -1,0 +1,512 @@
+Begin optimization report for: parse_args
+
+LOOP BEGIN at lab8vm-file.c (92, 5)
+LOOP END
+=================================================================
+
+Begin optimization report for: run_worker
+
+LOOP BEGIN at lab8vm-file.c (56, 5)
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (56, 5)
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (280, 5)
+
+    LOOP BEGIN at lab8vm-file.c (284, 9)
+    <Predicate Optimized v1>
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (284, 9)
+    <Predicate Optimized v2, split from line 285>
+
+        LOOP BEGIN at lab8vm-file.c (285, 13)
+        LOOP END
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (197, 5)
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (301, 9)
+
+        LOOP BEGIN
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v1>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v2, split from line 139>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v2, split from line 137>
+            LOOP END
+        LOOP END
+
+        LOOP BEGIN
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v1>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v2, split from line 139>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v2, split from line 137>
+            LOOP END
+        LOOP END
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (308, 9)
+
+        LOOP BEGIN
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v1>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v2, split from line 139>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v2, split from line 137>
+            LOOP END
+        LOOP END
+
+        LOOP BEGIN
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v1>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v2, split from line 139>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v2, split from line 137>
+            LOOP END
+        LOOP END
+    LOOP END
+LOOP END
+=================================================================
+
+Begin optimization report for: run_master
+
+LOOP BEGIN at lab8vm-file.c (80, 5)
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (80, 5)
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (362, 5)
+LOOP END
+=================================================================
+
+Begin optimization report for: main
+
+LOOP BEGIN at lab8vm-file.c (92, 5)
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (395, 5)
+    remark #15520: loop was not vectorized: loop with multiple exits cannot be vectorized unless it meets search loop idiom criteria
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (395, 5)
+<Remainder loop>
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (80, 5)
+<Distributed chunk1>
+<Multiversioned v1>
+<Loop stripmined by 64>
+    remark #15541: loop was not vectorized: outer loop is not an auto-vectorization candidate.
+
+    LOOP BEGIN at lab8vm-file.c (80, 5)
+    <Distributed chunk1>
+        remark #15300: LOOP WAS VECTORIZED
+        remark #15305: vectorization support: vector length 8
+        remark #15329: vectorization support: unmasked scatter store: [dbg info n/a]
+        remark #15389: vectorization support: unmasked unaligned unit stride store: [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (81, 9) ] 
+        remark #15475: --- begin vector loop cost summary ---
+        remark #15476: scalar cost: 8.000000 
+        remark #15477: vector cost: 5.531250 
+        remark #15478: estimated potential speedup: 1.421875 
+        remark #15309: vectorization support: normalized vectorization overhead 0.531250
+        remark #15488: --- end vector loop cost summary ---
+        remark #15447: --- begin vector loop memory reference summary ---
+        remark #15451: unmasked unaligned unit stride stores: 1 
+        remark #15463: unmasked indexed (or scatter) stores: 1 
+        remark #15568: Scatters are generated due to non-unit stride index of the corresponding stores.
+        remark #15474: --- end vector loop memory reference summary ---
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (80, 5)
+    <Distributed chunk1>
+    <Remainder loop for vectorization>
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (80, 5)
+    <Distributed chunk2>
+        remark #15344: Loop was not vectorized: vector dependence prevents vectorization
+        remark #15346: vector dependence: assumed FLOW dependence between [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (85, 21) ] and [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (83, 24) ] 
+        remark #15346: vector dependence: assumed FLOW dependence between [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (85, 21) ] and [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (85, 21) ] 
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (80, 5)
+    <Distributed chunk2>
+    <Remainder loop>
+    LOOP END
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (80, 5)
+<Multiversioned v2>
+    remark #15344: Loop was not vectorized: vector dependence prevents vectorization
+    remark #15346: vector dependence: assumed FLOW dependence between [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (85, 21) ] and [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (83, 24) ] 
+    remark #15346: vector dependence: assumed FLOW dependence between [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (85, 21) ] and [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (85, 21) ] 
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (80, 5)
+<Multiversioned v2>
+<Remainder loop>
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (80, 5)
+<Distributed chunk1>
+<Multiversioned v1>
+<Loop stripmined by 64>
+    remark #15541: loop was not vectorized: outer loop is not an auto-vectorization candidate.
+
+    LOOP BEGIN at lab8vm-file.c (80, 5)
+    <Distributed chunk1>
+        remark #15300: LOOP WAS VECTORIZED
+        remark #15305: vectorization support: vector length 8
+        remark #15329: vectorization support: unmasked scatter store: [dbg info n/a]
+        remark #15389: vectorization support: unmasked unaligned unit stride store: [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (81, 9) ] 
+        remark #15475: --- begin vector loop cost summary ---
+        remark #15476: scalar cost: 8.000000 
+        remark #15477: vector cost: 5.531250 
+        remark #15478: estimated potential speedup: 1.421875 
+        remark #15309: vectorization support: normalized vectorization overhead 0.531250
+        remark #15488: --- end vector loop cost summary ---
+        remark #15447: --- begin vector loop memory reference summary ---
+        remark #15451: unmasked unaligned unit stride stores: 1 
+        remark #15463: unmasked indexed (or scatter) stores: 1 
+        remark #15568: Scatters are generated due to non-unit stride index of the corresponding stores.
+        remark #15474: --- end vector loop memory reference summary ---
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (80, 5)
+    <Distributed chunk1>
+    <Remainder loop for vectorization>
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (80, 5)
+    <Distributed chunk2>
+        remark #15344: Loop was not vectorized: vector dependence prevents vectorization
+        remark #15346: vector dependence: assumed FLOW dependence between [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (85, 21) ] and [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (83, 24) ] 
+        remark #15346: vector dependence: assumed FLOW dependence between [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (85, 21) ] and [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (85, 21) ] 
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (80, 5)
+    <Distributed chunk2>
+    <Remainder loop>
+    LOOP END
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (80, 5)
+<Multiversioned v2>
+    remark #15344: Loop was not vectorized: vector dependence prevents vectorization
+    remark #15346: vector dependence: assumed FLOW dependence between [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (85, 21) ] and [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (83, 24) ] 
+    remark #15346: vector dependence: assumed FLOW dependence between [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (85, 21) ] and [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (85, 21) ] 
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (80, 5)
+<Multiversioned v2>
+<Remainder loop>
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (362, 5)
+    remark #15521: Loop was not vectorized: loop control variable was not identified. Explicitly compute the iteration count before executing the loop or try using canonical loop form from OpenMP specification
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (56, 5)
+    remark #15527: Loop was not vectorized: function call to  cannot be vectorized
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (56, 5)
+<Remainder loop>
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (56, 5)
+    remark #15527: Loop was not vectorized: function call to  cannot be vectorized
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (56, 5)
+<Remainder loop>
+LOOP END
+
+LOOP BEGIN at lab8vm-file.c (280, 5)
+
+    LOOP BEGIN at lab8vm-file.c (284, 9)
+    <Predicate Optimized v1>
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (284, 9)
+    <Predicate Optimized v2, split from line 285>
+
+        LOOP BEGIN at lab8vm-file.c (285, 13)
+        LOOP END
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (197, 5)
+        remark #15300: LOOP WAS VECTORIZED
+        remark #15305: vectorization support: vector length 2
+        remark #15328: vectorization support: unmasked gather load: [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (198, 29) ] 
+        remark #15389: vectorization support: unmasked unaligned unit stride store: [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (198, 9) ] 
+        remark #15328: vectorization support: unmasked gather load: [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (199, 29) ] 
+        remark #15389: vectorization support: unmasked unaligned unit stride store: [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (199, 9) ] 
+        remark #15475: --- begin vector loop cost summary ---
+        remark #15476: scalar cost: 10.000000 
+        remark #15477: vector cost: 14.515625 
+        remark #15478: estimated potential speedup: 0.687500 
+        remark #15309: vectorization support: normalized vectorization overhead 0.125000
+        remark #15488: --- end vector loop cost summary ---
+        remark #15447: --- begin vector loop memory reference summary ---
+        remark #15451: unmasked unaligned unit stride stores: 2 
+        remark #15462: unmasked indexed (or gather) loads: 2 
+        remark #15567: Gathers are generated due to non-unit stride index of the corresponding loads.
+        remark #15474: --- end vector loop memory reference summary ---
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (197, 5)
+    <Remainder loop for vectorization>
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (301, 9)
+
+        LOOP BEGIN at lab8vm-file.c (421, 9)
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v1>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v2, split from line 139>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v2, split from line 137>
+            LOOP END
+        LOOP END
+
+        LOOP BEGIN at lab8vm-file.c (421, 9)
+            remark #15541: loop was not vectorized: outer loop is not an auto-vectorization candidate.
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v2, split from line 137>
+                remark #15300: LOOP WAS VECTORIZED
+                remark #15305: vectorization support: vector length 2
+                remark #15328: vectorization support: masked gather load: [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (0, 0) ] 
+                remark #15475: --- begin vector loop cost summary ---
+                remark #15476: scalar cost: 22.000000 
+                remark #15477: vector cost: 25.500000 
+                remark #15478: estimated potential speedup: 0.843750 
+                remark #15309: vectorization support: normalized vectorization overhead 0.156250
+                remark #15570: using scalar loop trip count: 3
+                remark #15488: --- end vector loop cost summary ---
+                remark #15447: --- begin vector loop memory reference summary ---
+                remark #15458: masked indexed (or gather) loads: 1 
+                remark #15567: Gathers are generated due to non-unit stride index of the corresponding loads.
+                remark #15474: --- end vector loop memory reference summary ---
+                remark #25587: Loop has reduction
+                remark #15590: vectorization support: add reduction with value type int8_t [lab8vm-file.c:158:28 @[ lab8vm-file.c:304:17 @[ lab8vm-file.c:421:9 ] ]]
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v2, split from line 137>
+            <Remainder loop for vectorization>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v2, split from line 139>
+                remark #15300: LOOP WAS VECTORIZED
+                remark #15305: vectorization support: vector length 2
+                remark #15328: vectorization support: masked gather load: [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (0, 0) ] 
+                remark #15475: --- begin vector loop cost summary ---
+                remark #15476: scalar cost: 15.000000 
+                remark #15477: vector cost: 18.500000 
+                remark #15478: estimated potential speedup: 0.796875 
+                remark #15309: vectorization support: normalized vectorization overhead 0.203125
+                remark #15570: using scalar loop trip count: 3
+                remark #15488: --- end vector loop cost summary ---
+                remark #15447: --- begin vector loop memory reference summary ---
+                remark #15458: masked indexed (or gather) loads: 1 
+                remark #15567: Gathers are generated due to non-unit stride index of the corresponding loads.
+                remark #15474: --- end vector loop memory reference summary ---
+                remark #25587: Loop has reduction
+                remark #15590: vectorization support: add reduction with value type int8_t [lab8vm-file.c:158:28 @[ lab8vm-file.c:304:17 @[ lab8vm-file.c:421:9 ] ]]
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v2, split from line 139>
+            <Remainder loop for vectorization>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v1>
+                remark #15300: LOOP WAS VECTORIZED
+                remark #15305: vectorization support: vector length 2
+                remark #15328: vectorization support: masked gather load: [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (0, 0) ] 
+                remark #15475: --- begin vector loop cost summary ---
+                remark #15476: scalar cost: 13.000000 
+                remark #15477: vector cost: 16.500000 
+                remark #15478: estimated potential speedup: 0.765625 
+                remark #15309: vectorization support: normalized vectorization overhead 0.234375
+                remark #15570: using scalar loop trip count: 3
+                remark #15488: --- end vector loop cost summary ---
+                remark #15447: --- begin vector loop memory reference summary ---
+                remark #15458: masked indexed (or gather) loads: 1 
+                remark #15567: Gathers are generated due to non-unit stride index of the corresponding loads.
+                remark #15474: --- end vector loop memory reference summary ---
+                remark #25587: Loop has reduction
+                remark #15590: vectorization support: add reduction with value type int8_t [lab8vm-file.c:158:28 @[ lab8vm-file.c:304:17 @[ lab8vm-file.c:421:9 ] ]]
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v1>
+            <Remainder loop for vectorization>
+            LOOP END
+        LOOP END
+    LOOP END
+
+    LOOP BEGIN at lab8vm-file.c (308, 9)
+
+        LOOP BEGIN at lab8vm-file.c (421, 9)
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v1>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v2, split from line 139>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v2, split from line 137>
+            LOOP END
+        LOOP END
+
+        LOOP BEGIN at lab8vm-file.c (421, 9)
+            remark #15541: loop was not vectorized: outer loop is not an auto-vectorization candidate.
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v2, split from line 137>
+                remark #15300: LOOP WAS VECTORIZED
+                remark #15305: vectorization support: vector length 2
+                remark #15328: vectorization support: masked gather load: [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (0, 0) ] 
+                remark #15475: --- begin vector loop cost summary ---
+                remark #15476: scalar cost: 22.000000 
+                remark #15477: vector cost: 25.500000 
+                remark #15478: estimated potential speedup: 0.843750 
+                remark #15309: vectorization support: normalized vectorization overhead 0.156250
+                remark #15570: using scalar loop trip count: 3
+                remark #15488: --- end vector loop cost summary ---
+                remark #15447: --- begin vector loop memory reference summary ---
+                remark #15458: masked indexed (or gather) loads: 1 
+                remark #15567: Gathers are generated due to non-unit stride index of the corresponding loads.
+                remark #15474: --- end vector loop memory reference summary ---
+                remark #25587: Loop has reduction
+                remark #15590: vectorization support: add reduction with value type int8_t [lab8vm-file.c:158:28 @[ lab8vm-file.c:311:17 @[ lab8vm-file.c:421:9 ] ]]
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v2, split from line 137>
+            <Remainder loop for vectorization>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v2, split from line 139>
+                remark #15300: LOOP WAS VECTORIZED
+                remark #15305: vectorization support: vector length 2
+                remark #15328: vectorization support: masked gather load: [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (0, 0) ] 
+                remark #15475: --- begin vector loop cost summary ---
+                remark #15476: scalar cost: 15.000000 
+                remark #15477: vector cost: 18.500000 
+                remark #15478: estimated potential speedup: 0.796875 
+                remark #15309: vectorization support: normalized vectorization overhead 0.203125
+                remark #15570: using scalar loop trip count: 3
+                remark #15488: --- end vector loop cost summary ---
+                remark #15447: --- begin vector loop memory reference summary ---
+                remark #15458: masked indexed (or gather) loads: 1 
+                remark #15567: Gathers are generated due to non-unit stride index of the corresponding loads.
+                remark #15474: --- end vector loop memory reference summary ---
+                remark #25587: Loop has reduction
+                remark #15590: vectorization support: add reduction with value type int8_t [lab8vm-file.c:158:28 @[ lab8vm-file.c:311:17 @[ lab8vm-file.c:421:9 ] ]]
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v2, split from line 139>
+            <Remainder loop for vectorization>
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v1>
+                remark #15300: LOOP WAS VECTORIZED
+                remark #15305: vectorization support: vector length 2
+                remark #15328: vectorization support: masked gather load: [ C:\Users\proge\pcpc\mpi\lab8\lab8vm-file.c (0, 0) ] 
+                remark #15475: --- begin vector loop cost summary ---
+                remark #15476: scalar cost: 13.000000 
+                remark #15477: vector cost: 16.500000 
+                remark #15478: estimated potential speedup: 0.765625 
+                remark #15309: vectorization support: normalized vectorization overhead 0.234375
+                remark #15570: using scalar loop trip count: 3
+                remark #15488: --- end vector loop cost summary ---
+                remark #15447: --- begin vector loop memory reference summary ---
+                remark #15458: masked indexed (or gather) loads: 1 
+                remark #15567: Gathers are generated due to non-unit stride index of the corresponding loads.
+                remark #15474: --- end vector loop memory reference summary ---
+                remark #25587: Loop has reduction
+                remark #15590: vectorization support: add reduction with value type int8_t [lab8vm-file.c:158:28 @[ lab8vm-file.c:311:17 @[ lab8vm-file.c:421:9 ] ]]
+            LOOP END
+
+            LOOP BEGIN at lab8vm-file.c (156, 9)
+            <Predicate Optimized v1>
+            <Predicate Optimized v1>
+            <Remainder loop for vectorization>
+            LOOP END
+        LOOP END
+    LOOP END
+LOOP END
+=================================================================
+
+Begin optimization report for: printf
+=================================================================
+
+Begin optimization report for: __local_stdio_printf_options
+=================================================================
+
