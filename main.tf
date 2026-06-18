@@ -49,6 +49,7 @@ resource "google_compute_instance" "vm_instances" {
 
   network_interface {
     network = "default"
+    nic_type = "GVNIC"
     access_config {
       network_tier = "PREMIUM"
     }

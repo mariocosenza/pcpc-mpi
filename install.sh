@@ -55,7 +55,7 @@ chmod 600 "$SSH_DIR/id_rsa" "$SSH_DIR/authorized_keys"
 
 REPO_DIR="/home/pcpc/pcpc-mpi"
 if [ ! -d "$REPO_DIR" ]; then
-    sudo -u pcpc git clone https://github.com/mariocosenza/pcpc-mpi.git "$REPO_DIR"
+    sudo -u pcpc git clone https://github.com/mariocosenza/mpi-conway-game-of-life.git "$REPO_DIR"
 fi
 
 cat <<EOF >> /home/pcpc/.bashrc
@@ -72,10 +72,12 @@ fi
 
 cd "$REPO_DIR/mpi/lab8" || exit 1
 
-FLAGS="-O3 -xSAPPHIRERAPIDS -ipo -ffast-math -fiopenmp-simd -qopt-mem-layout-trans=3"
+FLAGS="-O3 -xSAPPHIRERAPIDS -ipo -fiopenmp-simd -qopt-mem-layout-trans=3"
 
 mpiicx $FLAGS generate_seed.c -o generate_seed
 mpiicx $FLAGS lab8vm-file.c -o game_of_life
+
+bash genera_matrici.sh
 
 chown -R pcpc:pcpc "$REPO_DIR"
 ldconfig
