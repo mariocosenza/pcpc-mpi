@@ -276,43 +276,44 @@ void run_worker(int mpi_dims[2], MPI_Comm split_comm, int sizes[2], int subsizes
     MPI_Status  mpi_stats[2];
 
     for (int g = 0; g < N_GEN; g++) {
-        async_recv_top_bottom(cart_comm, &gm, top_rank, bot_rank, req_recv_tb);
+        pack_left_right_send_buffers(&gm, send_l_buf, send_r_buf);
+        async_send_left_right(cart_comm, &gm, left_rank, right_rank, send_l_buf, send_r_buf, req_send_lr);
         async_send_top_bottom(cart_comm, &gm, top_rank, bot_rank, req_send_tb);
+        async_recv_left_right(cart_comm, &gm, left_rank, right_rank, req_recv_lr);
+        async_recv_top_bottom(cart_comm, &gm, top_rank, bot_rank, req_recv_tb);
 
-        for (uint_fast32_t r = 1; r + 1 < local_rows; r++) {
-            for (uint_fast32_t c = 1; c + 1 < local_cols; c++) {
+        for (uint32_t r = 1; r + 1 < local_rows; r++) {
+            for (uint32_t c = 1; c + 1 < local_cols; c++) {
                 play_inner_cells(gm.matrix, next_local_grid, r, c, local_cols);
             }
         }
 
         MPI_Waitall(2, req_recv_tb, mpi_stats);
-        MPI_Waitall(2, req_send_tb, mpi_stats);
-
-        pack_left_right_send_buffers(&gm, send_l_buf, send_r_buf);
-        
-        async_recv_left_right(cart_comm, &gm, left_rank, right_rank, req_recv_lr);
-        async_send_left_right(cart_comm, &gm, left_rank, right_rank, send_l_buf, send_r_buf, req_send_lr);
-
         MPI_Waitall(2, req_recv_lr, mpi_stats);
-        MPI_Waitall(2, req_send_lr, mpi_stats);
 
-        for (uint_fast32_t c = 0; c < local_cols; c++) {
+
+        for (uint32_t c = 0; c < local_cols; c++) {
             play_border_cells(&gm, next_local_grid, 0, c);
             if (local_rows > 1) {
                 play_border_cells(&gm, next_local_grid, local_rows - 1, c);
             }
         }
         
-        for (uint_fast32_t r = 1; r + 1 < local_rows; r++) {
+        for (uint32_t r = 1; r + 1 < local_rows; r++) {
             play_border_cells(&gm, next_local_grid, r, 0);
             if (local_cols > 1) {
                 play_border_cells(&gm, next_local_grid, r, local_cols - 1);
             }
         }
 
+
+        MPI_Waitall(2, req_send_tb, mpi_stats);
+        MPI_Waitall(2, req_send_lr, mpi_stats);
+
         void *tmp_ptr   = gm.matrix;
         gm.matrix       = next_local_grid;
         next_local_grid = tmp_ptr;
+
     }
 
     
